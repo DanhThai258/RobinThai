@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Robin Thai | The Winter Prince</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --accent: #93c5fd;
+            --bg: #020617;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.12);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Nền của Thái */
+        .background-visual {
+            position: fixed; inset: 0; z-index: -2;
+            background: url('background.jpg') no-repeat center center;
+            background-size: cover; 
+            filter: brightness(0.25) saturate(1.1);
+            transform: scale(1.1); /* Hơi phóng to để tránh viền trắng trên mobile */
+        }
+
+        /* Canvas tuyết mượt hơn */
+        #snow-canvas {
+            position: fixed; inset: 0; z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Card trung tâm tối ưu Mobile */
+        .card {
+            width: 88%; 
+            max-width: 380px;
+            background: var(--glass);
+            backdrop-filter: blur(25px) saturate(160%);
+            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            border-radius: 35px; 
+            padding: 45px 25px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Hiệu ứng Avatar rực sáng */
+        .avatar-box {
+            position: relative;
+            width: 125px; height: 125px;
+            margin: 0 auto 30px;
+        }
+
+        .avatar-box img {
+            width: 100%; height: 100%; 
+            border-radius: 50%;
+            object-fit: cover; 
+            border: 3px solid var(--primary);
+            padding: 4px;
+            background: rgba(2, 6, 23, 0.5);
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.3); transform: scale(1); }
+            50% { box-shadow: 0 0 30px rgba(96, 165, 250, 0.6); transform: scale(1.03); }
+        }
+
+        h1 { 
+            font-size: 26px; 
+            font-weight: 800; 
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .desc { 
+            font-size: 10px; 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            color: var(--primary); 
+            margin-bottom: 35px; 
+            font-weight: 600; 
+            opacity: 0.9;
+        }
+
+        /* Nút bấm Mobile-First */
+        .links-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        
+        .link-btn {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 16px 20px; 
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border); 
+            border-radius: 18px;
+            text-decoration: none; 
+            color: #fff; 
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hiệu ứng khi nhấn tay vào (Touch) */
+        .link-btn:active {
+            transform: scale(0.96);
+            background: rgba(96, 165, 250, 0.15);
+            border-color: var(--primary);
+        }
+
+        .link-btn i { font-size: 18px; color: var(--primary); width: 25px; text-align: center; }
+        .link-btn span { flex: 1; text-align: left; margin-left: 15px; letter-spacing: 0.3px; }
+        .link-btn .chevron { opacity: 0.2; font-size: 12px; }
+
+        footer { 
+            margin-top: 40px; 
+            font-size: 9px; 
+            opacity: 0.4; 
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-visual"></div>
+    <canvas id="snow-canvas"></canvas>
+
+    <div class="card">
+        <div class="avatar-box">
+            <img src="avatar.jpg" alt="Robin Thai">
+        </div>
+        <h1>Nguyễn Danh Thái</h1>
+        <p class="desc">Hoàng tử mùa đông</p>
+        
+        <div class="links-wrapper">
+            <a href="https://www.facebook.com/RobinnThai" class="link-btn" target="_blank">
+                <i class="fab fa-facebook-f"></i> <span>Facebook</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <a href="https://www.instagram.com/robinn_thai/" class="link-btn" target="_blank">
+                <i class="fab fa-instagram"></i> <span>Instagram</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <a href="https://locket.cam/robinthai" class="link-btn" target="_blank">
+                <i class="fa-solid fa-camera"></i> <span>Locket Gallery</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+            <a href="https://cdn2.fptshop.com.vn/small/Meme_meo_tang_hoa_13_44caa2bf0e.jpg" class="link-btn" target="_blank">
+                <i class="fas fa-crown"></i> <span>Give You</span>
+                <i class="fas fa-chevron-right chevron"></i>
+            </a>
+        </div>
+
+        <footer>ROBIN THAI • EST 2026</footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5; // Kích thước hạt đa dạng tạo chiều sâu
+                this.speed = Math.random() * 0.8 + 0.3; // Tốc độ khác nhau
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = -10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            particles = [];
+            let count = window.innerWidth < 768 ? 45 : 80; // Giảm số hạt trên mobile để mượt hơn
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            createParticles();
+        });
+
+        initCanvas();
+        createParticles();
+        animate();
+    </script>
+</body>
+</html>

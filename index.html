@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <title>Robin Thai | The Winter Prince</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #60a5fa;
-            --accent: #93c5fd;
+            --primary: #93c5fd; 
+            --accent: #38bdf8;
             --bg: #020617;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.12);
+            --glass: rgba(15, 23, 42, 0.45);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
-            color: #fff;
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -33,114 +31,139 @@
             overflow: hidden;
         }
 
-        /* Nền của Thái */
         .background-visual {
             position: fixed; inset: 0; z-index: -2;
             background: url('background.jpg') no-repeat center center;
             background-size: cover; 
-            filter: brightness(0.25) saturate(1.1);
-            transform: scale(1.1); /* Hơi phóng to để tránh viền trắng trên mobile */
+            filter: brightness(0.25) saturate(1.2);
+            transform: scale(1.05);
         }
 
-        /* Canvas tuyết mượt hơn */
-        #snow-canvas {
-            position: fixed; inset: 0; z-index: -1;
-            pointer-events: none;
-        }
+        #snow-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-        /* Card trung tâm tối ưu Mobile */
         .card {
-            width: 88%; 
-            max-width: 380px;
+            width: 90%; 
+            max-width: 360px;
             background: var(--glass);
-            backdrop-filter: blur(25px) saturate(160%);
-            -webkit-backdrop-filter: blur(25px) saturate(160%);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
             border-radius: 35px; 
-            padding: 45px 25px;
+            padding: 45px 20px;
             border: 1px solid var(--border);
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
             z-index: 10;
         }
 
-        /* Hiệu ứng Avatar rực sáng */
+        /* Avatar Box & Zoom Effect */
         .avatar-box {
             position: relative;
-            width: 125px; height: 125px;
-            margin: 0 auto 30px;
+            width: 110px; height: 110px;
+            margin: 0 auto 15px;
+            cursor: pointer; /* Hiệu ứng bàn tay khi rê vào */
         }
 
         .avatar-box img {
             width: 100%; height: 100%; 
             border-radius: 50%;
             object-fit: cover; 
-            border: 3px solid var(--primary);
+            border: 2px solid rgba(147, 197, 253, 0.3);
             padding: 4px;
-            background: rgba(2, 6, 23, 0.5);
-            animation: pulse-glow 3s infinite ease-in-out;
+            transition: transform 0.3s ease;
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.3); transform: scale(1); }
-            50% { box-shadow: 0 0 30px rgba(96, 165, 250, 0.6); transform: scale(1.03); }
+        .avatar-box:hover img {
+            transform: scale(1.05); /* Phóng nhẹ khi di chuột vào */
         }
+
+        /* MỚI: Overlay phóng to ảnh */
+        .avatar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.9);
+            backdrop-filter: blur(15px);
+            display: none; /* Mặc định ẩn */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .avatar-overlay img {
+            max-width: 85%;
+            max-height: 85%;
+            border-radius: 25px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            border: 2px solid var(--border);
+            animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         h1 { 
-            font-size: 26px; 
-            font-weight: 800; 
-            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
         }
 
-        .desc { 
-            font-size: 10px; 
-            letter-spacing: 4px; 
-            text-transform: uppercase; 
-            color: var(--primary); 
-            margin-bottom: 35px; 
-            font-weight: 600; 
-            opacity: 0.9;
-        }
-
-        /* Nút bấm Mobile-First */
-        .links-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        .links-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 25px; }
         
         .link-btn {
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            padding: 16px 20px; 
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border); 
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border); border-radius: 16px;
+            text-decoration: none; color: var(--text-main); font-size: 13px; font-weight: 600;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .link-btn:hover { background: rgba(255, 255, 255, 0.08); transform: scale(1.02); border-color: var(--primary); }
+        .link-btn i { font-size: 16px; color: var(--primary); width: 20px; }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .interest-card {
+            position: relative;
+            height: 85px;
             border-radius: 18px;
-            text-decoration: none; 
-            color: #fff; 
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            transition: 0.4s;
         }
 
-        /* Hiệu ứng khi nhấn tay vào (Touch) */
-        .link-btn:active {
-            transform: scale(0.96);
-            background: rgba(96, 165, 250, 0.15);
-            border-color: var(--primary);
+        .interest-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+
+        .interest-card img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            transition: 0.4s;
         }
 
-        .link-btn i { font-size: 18px; color: var(--primary); width: 25px; text-align: center; }
-        .link-btn span { flex: 1; text-align: left; margin-left: 15px; letter-spacing: 0.3px; }
-        .link-btn .chevron { opacity: 0.2; font-size: 12px; }
+        .interest-card:hover img { filter: brightness(0.6); }
 
-        footer { 
-            margin-top: 40px; 
-            font-size: 9px; 
-            opacity: 0.4; 
-            letter-spacing: 2px;
-            font-weight: 600;
+        .interest-card span {
+            position: relative; z-index: 2;
+            color: #fff; font-size: 8px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
+
+        footer { margin-top: 25px; font-size: 8px; color: var(--text-sub); opacity: 0.5; letter-spacing: 2px; }
 
     </style>
 </head>
@@ -149,89 +172,84 @@
     <div class="background-visual"></div>
     <canvas id="snow-canvas"></canvas>
 
+    <div class="avatar-overlay" id="avatarOverlay" onclick="closeAvatar()">
+        <img src="avatar.jpg" alt="Zoomed Avatar">
+    </div>
+
     <div class="card">
-        <div class="avatar-box">
+        <div class="avatar-box" onclick="openAvatar()">
             <img src="avatar.jpg" alt="Robin Thai">
         </div>
         <h1>Nguyễn Danh Thái</h1>
-        <p class="desc">Hoàng tử mùa đông</p>
         
         <div class="links-wrapper">
             <a href="https://www.facebook.com/RobinnThai" class="link-btn" target="_blank">
                 <i class="fab fa-facebook-f"></i> <span>Facebook</span>
-                <i class="fas fa-chevron-right chevron"></i>
+                <i class="fas fa-chevron-right" style="font-size: 10px; opacity: 0.2;"></i>
             </a>
             <a href="https://www.instagram.com/robinn_thai/" class="link-btn" target="_blank">
                 <i class="fab fa-instagram"></i> <span>Instagram</span>
-                <i class="fas fa-chevron-right chevron"></i>
+                <i class="fas fa-chevron-right" style="font-size: 10px; opacity: 0.2;"></i>
             </a>
             <a href="https://locket.cam/robinthai" class="link-btn" target="_blank">
                 <i class="fa-solid fa-camera"></i> <span>Locket Gallery</span>
-                <i class="fas fa-chevron-right chevron"></i>
+                <i class="fas fa-chevron-right" style="font-size: 10px; opacity: 0.2;"></i>
             </a>
             <a href="https://cdn2.fptshop.com.vn/small/Meme_meo_tang_hoa_13_44caa2bf0e.jpg" class="link-btn" target="_blank">
                 <i class="fas fa-crown"></i> <span>Give You</span>
-                <i class="fas fa-chevron-right chevron"></i>
+                <i class="fas fa-chevron-right" style="font-size: 10px; opacity: 0.2;"></i>
             </a>
         </div>
 
-        <footer>ROBIN THAI • EST 2026</footer>
+        <div class="interests-grid">
+            <a href="https://www.skysports.com/football" class="interest-card" target="_blank">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500" alt="Football">
+                <span>Sports</span>
+            </a>
+            <a href="https://open.spotify.com/playlist/7Cyfwk19CxzHrkXvNt57J5?si=a2f61841384a4139" class="interest-card" target="_blank">
+                <img src="data:image/png;base64,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" alt="Music">
+                <span>Music</span>
+            </a>
+            <a href="https://unity.com/" class="interest-card" target="_blank">
+                <img src="data:image/png;base64,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" alt="Life">
+                <span>Unity</span>
+            </a>
+        </div>
+
+        <footer>ROBIN THAI • 2004</footer>
     </div>
 
     <script>
+        // MỚI: Hàm xử lý phóng to/thu nhỏ Avatar
+        const overlay = document.getElementById('avatarOverlay');
+        function openAvatar() {
+            overlay.style.display = 'flex';
+        }
+        function closeAvatar() {
+            overlay.style.display = 'none';
+        }
+
+        // Tuyết rơi (Giữ nguyên)
         const canvas = document.getElementById('snow-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
+        function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         class Particle {
             constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5; // Kích thước hạt đa dạng tạo chiều sâu
-                this.speed = Math.random() * 0.8 + 0.3; // Tốc độ khác nhau
-                this.opacity = Math.random() * 0.5 + 0.2;
+                this.size = Math.random() * 2 + 0.5;
+                this.speed = Math.random() * 0.5 + 0.2;
+                this.opacity = Math.random() * 0.4 + 0.1;
             }
-            update() {
-                this.y += this.speed;
-                if (this.y > canvas.height) {
-                    this.y = -10;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            update() { this.y += this.speed; if (this.y > canvas.height) { this.y = -10; this.x = Math.random() * canvas.width; } }
+            draw() { ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
         }
-
-        function createParticles() {
-            particles = [];
-            let count = window.innerWidth < 768 ? 45 : 80; // Giảm số hạt trên mobile để mượt hơn
-            for (let i = 0; i < count; i++) particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', () => {
-            initCanvas();
-            createParticles();
-        });
-
-        initCanvas();
-        createParticles();
-        animate();
+        function createParticles() { particles = []; for (let i = 0; i < 40; i++) particles.push(new Particle()); }
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
+        window.addEventListener('resize', () => { initCanvas(); createParticles(); });
+        initCanvas(); createParticles(); animate();
     </script>
 </body>
 </html>

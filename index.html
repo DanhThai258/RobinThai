@@ -12,18 +12,14 @@
             --primary: #93c5fd; 
             --accent: #38bdf8;
             --bg: #020617;
-            --glass: rgba(15, 23, 42, 0.65);
-            --border: rgba(255, 255, 255, 0.12);
+            /* CHỈNH TẠI ĐÂY: rgba cuối cùng là 0.05 (gần như trong suốt hoàn toàn) */
+            --glass: rgba(255, 255, 255, 0.03); 
+            --border: rgba(255, 255, 255, 0.15);
             --text-main: #ffffff;
-            --text-sub: #94a3b8;
+            --text-sub: #cbd5e1;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -34,7 +30,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            /* Khử răng cưa cho font chữ mượt hơn */
             -webkit-font-smoothing: antialiased;
         }
 
@@ -42,42 +37,41 @@
             position: fixed; inset: 0; z-index: -2;
             background: url('background.jpg') no-repeat center center;
             background-size: cover; 
-            filter: brightness(0.3) saturate(1.2);
-            /* Ép chạy bằng GPU để không bị giật nền khi canvas chạy */
-            transform: scale(1.1) translateZ(0);
-            will-change: transform;
+            filter: brightness(0.4) saturate(1.1);
+            transform: scale(1.05);
         }
 
-        #snow-canvas { 
-            position: fixed; inset: 0; z-index: -1; 
-            pointer-events: none; 
-            will-change: transform;
-        }
+        #snow-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
         .card {
             width: 80%; 
             max-width: 310px;
             background: var(--glass);
-            backdrop-filter: blur(30px) saturate(200%);
-            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            /* CHỈNH TẠI ĐÂY: Blur 2px để thấy background đằng sau cực rõ */
+            backdrop-filter: blur(3px); 
+            -webkit-backdrop-filter: blur(3px);
             border-radius: 35px; 
             padding: 35px 20px;
+            /* Viền card mỏng để định hình khung */
             border: 1px solid var(--border);
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            /* Đổ bóng nhẹ để card không bị chìm hoàn toàn vào nền */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             z-index: 10;
-            /* Tăng tốc độ phản hồi hover */
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            will-change: transform;
+            transition: all 0.3s ease;
         }
 
-        .card:hover { transform: translateY(-8px) translateZ(0); }
+        .card:hover { 
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08); /* Hiện lên nhẹ khi hover */
+            border-color: rgba(255, 255, 255, 0.4);
+        }
 
         .avatar-box {
             position: relative;
             width: 100px; height: 100px;
-            margin: 0 auto 12px;
+            margin: 0 auto 15px;
             cursor: pointer;
         }
 
@@ -85,90 +79,69 @@
             width: 100%; height: 100%; 
             border-radius: 50%;
             object-fit: cover; 
-            border: 3px solid var(--primary);
+            border: 2px solid var(--primary);
             padding: 4px;
-            /* Dùng transform thay vì các thuộc tính khác để tránh re-layout */
             transition: transform 0.3s ease-out;
-            will-change: transform;
         }
 
         .avatar-box:hover img { transform: scale(1.1) rotate(5deg); }
 
-        .avatar-overlay {
-            position: fixed; inset: 0;
-            background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(20px);
-            display: none; justify-content: center; align-items: center;
-            z-index: 1000; cursor: zoom-out;
-            /* Hiệu ứng hiện ra mượt hơn */
-            transition: opacity 0.3s ease;
-        }
-
-        .avatar-overlay img {
-            max-width: 85%; max-height: 85%;
-            border-radius: 30px;
-            animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
         h1 { 
             font-size: 22px; 
             font-weight: 800; letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 22px;
+            color: #fff;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Thêm bóng chữ để dễ đọc trên nền trong suốt */
         }
 
-        .links-wrapper { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+        .links-wrapper { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
         
         .link-btn {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 16px; 
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border); border-radius: 16px;
-            text-decoration: none; color: var(--text-main); font-size: 12px; font-weight: 600;
-            /* Giảm thời gian transition để cảm giác phản hồi nhanh hơn (không bị delay tay) */
-            transition: transform 0.2s ease, background 0.2s ease;
+            /* Nút cũng trong suốt để lộ background */
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 16px;
+            text-decoration: none; color: var(--text-main); font-size: 13px; font-weight: 600;
+            transition: 0.2s ease;
+            backdrop-filter: blur(2px);
         }
 
         .link-btn:hover { 
-            background: rgba(255, 255, 255, 0.1); 
-            transform: translateX(6px) translateZ(0); 
+            background: rgba(255, 255, 255, 0.15); 
+            transform: translateX(5px);
         }
         
         .link-btn i { font-size: 16px; width: 22px; }
 
-        /* Các lớp màu sắc giữ nguyên */
-        .fa-facebook-f { color: #1877F2; filter: drop-shadow(0 0 5px rgba(24, 119, 242, 0.5)); }
+        /* Icon colors */
+        .fa-facebook-f { color: #1877F2; }
         .fa-instagram { 
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 5px rgba(214, 36, 159, 0.5));
         }
-        .fa-camera { color: #FFFC00; filter: drop-shadow(0 0 5px rgba(255, 252, 0, 0.5)); }
+        .fa-camera { color: #FFFC00; }
         .fa-crown { color: #F59E0B; }
 
         .interests-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 8px; padding-top: 18px; border-top: 1px solid var(--border);
+            gap: 10px; padding-top: 20px; border-top: 1px solid var(--border);
         }
 
         .interest-card {
-            position: relative; height: 70px; border-radius: 18px; 
-            overflow: hidden; text-decoration: none;
+            position: relative; height: 75px; border-radius: 20px; 
+            overflow: hidden; 
             display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--border); 
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            cursor: pointer;
+            border: 1px solid var(--border); transition: 0.3s;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .interest-card:hover { transform: translateY(-5px) translateZ(0); border-color: var(--primary); }
-        .interest-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4); }
-        .interest-card span { position: relative; z-index: 2; color: #fff; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+        .interest-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .interest-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
 
-        footer { margin-top: 20px; font-size: 8px; color: var(--text-sub); opacity: 0.6; letter-spacing: 2px; }
+        footer { margin-top: 25px; font-size: 8px; color: #fff; opacity: 0.7; letter-spacing: 2px; text-shadow: 0 1px 5px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -176,12 +149,8 @@
     <div class="background-visual"></div>
     <canvas id="snow-canvas"></canvas>
 
-    <div class="avatar-overlay" id="avatarOverlay" onclick="closeAvatar()">
-        <img src="avatar.jpg" alt="Zoomed Avatar">
-    </div>
-
     <div class="card">
-        <div class="avatar-box" onclick="openAvatar()">
+        <div class="avatar-box">
             <img src="avatar.jpg" alt="Robin Thai">
         </div>
         <h1>Nguyễn Danh Thái</h1>
@@ -189,15 +158,15 @@
         <div class="links-wrapper">
             <a href="https://www.facebook.com/RobinnThai" class="link-btn" target="_blank">
                 <span><i class="fab fa-facebook-f"></i> Facebook</span>
-                <i class="fas fa-chevron-right" style="font-size: 8px; opacity: 0.2;"></i>
+                <i class="fas fa-chevron-right" style="opacity: 0.3;"></i>
             </a>
             <a href="https://www.instagram.com/robinn_thai/" class="link-btn" target="_blank">
                 <span><i class="fab fa-instagram"></i> Instagram</span>
-                <i class="fas fa-chevron-right" style="font-size: 8px; opacity: 0.2;"></i>
+                <i class="fas fa-chevron-right" style="opacity: 0.3;"></i>
             </a>
             <a href="https://locket.cam/robinthai" class="link-btn" target="_blank">
                 <span><i class="fa-solid fa-camera"></i> Locket Gallery</span>
-                <i class="fas fa-chevron-right" style="font-size: 8px; opacity: 0.2;"></i>
+                <i class="fas fa-chevron-right" style="opacity: 0.3;"></i>
             </a>
             <a href="https://cdn2.fptshop.com.vn/small/Meme_meo_tang_hoa_13_44caa2bf0e.jpg" class="link-btn" target="_blank">
                 <span><i class="fas fa-crown"></i> Give You</span>
@@ -224,73 +193,34 @@
     </div>
 
     <script>
-        const overlay = document.getElementById('avatarOverlay');
-        function openAvatar() { 
-            overlay.style.display = 'flex'; 
-            overlay.style.opacity = '1';
-        }
-        function closeAvatar() { 
-            overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
-        }
-
         const canvas = document.getElementById('snow-canvas');
-        const ctx = canvas.getContext('2d', { alpha: true }); // Tối ưu context
+        const ctx = canvas.getContext('2d');
         let particles = [];
-        let animationFrame;
-
         function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            createParticles();
-        }
-
-        class Particle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 0.5; // Nhỏ hơn chút cho tinh tế
-                this.speed = Math.random() * 0.5 + 0.2;
-                this.opacity = Math.random() * 0.4 + 0.1;
-            }
-            update() {
-                this.y += this.speed;
-                if (this.y > canvas.height) {
-                    this.y = -10;
-                    this.x = Math.random() * canvas.width;
-                }
-            }
-            draw() {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function createParticles() {
             particles = [];
-            const count = window.innerWidth < 480 ? 50 : 100; // Giảm số lượng trên mobile
-            for (let i = 0; i < count; i++) particles.push(new Particle());
+            for (let i = 0; i < 70; i++) particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                speed: Math.random() * 0.5 + 0.2,
+                opacity: Math.random() * 0.5 + 0.1
+            });
         }
-
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            animationFrame = requestAnimationFrame(animate);
+            particles.forEach(p => {
+                p.y += p.speed;
+                if (p.y > canvas.height) p.y = -10;
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
         }
-
-        // Tối ưu Resize bằng Debounce
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(initCanvas, 200);
-        });
-
+        window.addEventListener('resize', initCanvas);
         initCanvas();
         animate();
     </script>

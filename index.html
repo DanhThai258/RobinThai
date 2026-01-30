@@ -86,6 +86,24 @@
 
         .avatar-box:hover img { transform: scale(1.1) rotate(5deg); }
 
+        /* PHẦN THÊM MỚI: CSS cho lớp phủ xem Avatar */
+        .avatar-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center;
+            z-index: 1000; cursor: zoom-out;
+            animation: fadeIn 0.3s ease;
+        }
+        .avatar-overlay img {
+            max-width: 85%; max-height: 85%;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); } to { transform: scale(1); } }
+
         h1 { 
             font-size: 22px; 
             font-weight: 800; letter-spacing: -0.5px;
@@ -149,8 +167,12 @@
     <div class="background-visual"></div>
     <canvas id="snow-canvas"></canvas>
 
+    <div class="avatar-overlay" id="avatarOverlay" onclick="closeAvatar()">
+        <img src="avatar.jpg" alt="Zoomed Avatar">
+    </div>
+
     <div class="card">
-        <div class="avatar-box">
+        <div class="avatar-box" onclick="openAvatar()">
             <img src="avatar.jpg" alt="Robin Thai">
         </div>
         <h1>Nguyễn Danh Thái</h1>
@@ -191,6 +213,21 @@
 
         <footer>ROBIN THAI • EST 2004</footer>
     </div>
+
+    <script>
+        const overlay = document.getElementById('avatarOverlay');
+        function openAvatar() { 
+            overlay.style.display = 'flex'; 
+        }
+        function closeAvatar() { 
+            overlay.style.display = 'none'; 
+        }
+
+        // Tối ưu hóa: Bấm phím ESC để thoát xem ảnh
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeAvatar();
+        });
+    </script>
 
     <script>
         const canvas = document.getElementById('snow-canvas');

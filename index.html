@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Robin Thai | The Winter Prince</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-black: #000000;
+            --text-white: #ffffff;
+            --text-gray-300: #d1d5db;
+            --border-white-20: rgba(255, 255, 255, 0.2);
+            --border-white-10: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+        }
+
+        /* Typography & Global Rules */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+
+
+        /* Video Background with Parallax Scale & Contrast Filters */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -5;
+            pointer-events: none;
+            transform: scale(1.06);
+            filter: contrast(1.15) brightness(0.92) saturate(1.05);
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        /* Snow Canvas Overlaying Background Video */
+        #snow-canvas { 
+            position: fixed; 
+            inset: 0; 
+            z-index: -4; 
+            pointer-events: none; 
+        }
+
+        /* Liquid Glass CSS Style */
+        .liquid-glass {
+            background: rgba(0, 0, 0, 0.4);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Centered Layout Wrapper */
+        .card-container {
+            perspective: 1000px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Profile Card - Liquid Glass Styled with Dynamic Mouse Glow */
+        .profile-card {
+            width: 100%;
+            max-width: 325px;
+            border-radius: 2.25rem;
+            padding: 35px 22px 25px;
+            border: 1px solid var(--border-white-20);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+            background: radial-gradient(circle 200px at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.6) 80%), rgba(0, 0, 0, 0.35) !important;
+            transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;
+            animation: fadeInUp-card 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .profile-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Diagonal Glass Shine Animation */
+        .profile-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.13), transparent);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        .profile-card.animate-shine::after {
+            animation: shine 1.2s ease-in-out;
+        }
+
+        @keyframes shine {
+            100% { left: 150%; }
+        }
+
+        /* Dynamic hour greeting badge with 3D Parallax & Entry */
+        .greeting-badge {
+            display: inline-block;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+            transform: translateZ(25px);
+            animation: fadeInUp-badge 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.1s;
+        }
+
+        /* Avatar styling with Concentric Cyber Rings (Speed up and pulse on playing) */
+        .avatar-box {
+            position: relative;
+            width: 102px; 
+            height: 102px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transform: translateZ(40px);
+            animation: fadeInUp-avatar 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.15s;
+        }
+
+        .avatar-ring-1, .avatar-ring-2 {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .avatar-ring-1 {
+            inset: -4px;
+            border: 1px dashed rgba(56, 189, 248, 0.45);
+            animation: rotate-clockwise 20s linear infinite;
+        }
+
+        .avatar-ring-2 {
+            inset: -9px;
+            border: 1px dashed rgba(168, 85, 247, 0.35);
+            animation: rotate-counter 25s linear infinite;
+        }
+
+        .avatar-box.playing .avatar-ring-1 {
+            animation: rotate-clockwise 7s linear infinite;
+            border-color: rgba(56, 189, 248, 0.85);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .avatar-box.playing .avatar-ring-2 {
+            animation: rotate-counter 9s linear infinite;
+            border-color: rgba(168, 85, 247, 0.7);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+        }
+
+        .avatar-img-wrap {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+            z-index: 2;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .avatar-img-wrap img {
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%;
+            object-fit: cover; 
+            border: 2px solid rgba(15, 23, 42, 0.8);
+            background: #0f172a;
+        }
+
+        .avatar-box:hover .avatar-img-wrap { 
+            transform: scale(1.06) rotate(4deg); 
+        }
+
+        /* Zoom modal */
+        .avatar-overlay {
+            position: fixed; 
+            inset: 0;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: none; 
+            justify-content: center; 
+            align-items: center;
+            z-index: 1000; 
+            cursor: zoom-out;
+            animation: fadeIn 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .avatar-overlay img {
+            max-width: 80%; 
+            max-height: 80%;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            animation: zoomIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.85); } to { transform: scale(1); } }
+
+        /* Name Title 3D Parallax & Entry */
+        .name-title { 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            letter-spacing: -0.02em;
+            color: var(--text-white);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transform: translateZ(30px);
+            animation: fadeInUp-name 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.2s;
+        }
+
+        .verify-badge {
+            color: #38bdf8;
+            font-size: 14px;
+        }
+
+        /* Typewriter Bio Subtitle 3D Parallax & Entry */
+        .bio-subtitle {
+            font-size: 0.8125rem;
+            color: var(--text-gray-300);
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            min-height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateZ(25px);
+            animation: fadeInUp-bio 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.25s;
+        }
+
+        .cursor {
+            animation: blink 0.8s infinite;
+            color: var(--accent);
+            margin-left: 2px;
+            font-weight: 800;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Music Player Widget 3D Parallax & Entry */
+        .music-player {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-white-10);
+            border-radius: 20px;
+            margin-bottom: 22px;
+            transform: translateZ(20px);
+            animation: fadeInUp-music 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.3s;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .music-cover {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            animation: spin 10s linear infinite;
+            animation-play-state: paused;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.5s ease;
+        }
+
+        .music-cover.playing {
+            animation-play-state: running;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .music-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .music-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        .music-artist {
+            font-size: 9px;
+            color: var(--text-gray-300);
+            opacity: 0.8;
+            margin-top: 1px;
+        }
+
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Visualizer (Auto width for 10 bars) */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2.2px;
+            height: 14px;
+            width: auto;
+        }
+
+        .bar {
+            width: 2px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 1px;
+            transition: height 0.1s linear;
+        }
+
+        .play-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            outline: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.3s ease;
+            font-size: 10px;
+            border: 1px solid var(--border-white-10);
+            position: relative;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--text-white);
+            color: var(--bg-black);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Play button pulsing call to action when paused */
+        .play-btn.paused-pulse {
+            animation: play-pulse 2s infinite;
+        }
+
+        @keyframes play-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45); }
+            70% { box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        /* Links Wrapper */
+        .links-wrapper { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            width: 100%;
+            margin-bottom: 22px; 
+        }
+        
+        .profile-link-btn {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 13px 18px; 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid var(--border-white-10); 
+            border-radius: 18px;
+            text-decoration: none; 
+            color: var(--text-white); 
+            font-size: 13px; 
+            font-weight: 600;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-link-btn:hover { 
+            background: rgba(255, 255, 255, 0.07); 
+            border-color: var(--border-white-20);
+            transform: translateY(-2.5px) translateZ(22px);
+        }
+
+        /* Custom Hover Colors & Edge Glows for Social Links */
+        .profile-link-btn[href*="facebook.com"]:hover {
+            border-color: rgba(24, 119, 242, 0.45);
+            box-shadow: 0 6px 20px rgba(24, 119, 242, 0.18);
+            background: rgba(24, 119, 242, 0.04);
+        }
+        .profile-link-btn[href*="facebook.com"]:hover i.fab {
+            color: #1877f2;
+            text-shadow: 0 0 8px rgba(24, 119, 242, 0.5);
+        }
+
+        .profile-link-btn[href*="instagram.com"]:hover {
+            border-color: rgba(228, 64, 95, 0.45);
+            box-shadow: 0 6px 20px rgba(228, 64, 95, 0.18);
+            background: rgba(228, 64, 95, 0.04);
+        }
+        .profile-link-btn[href*="instagram.com"]:hover i.fab {
+            color: #e4405f;
+            text-shadow: 0 0 8px rgba(228, 64, 95, 0.5);
+        }
+
+        .profile-link-btn[href*="locket.cam"]:hover {
+            border-color: rgba(255, 252, 0, 0.45);
+            box-shadow: 0 6px 20px rgba(255, 252, 0, 0.18);
+            background: rgba(255, 252, 0, 0.04);
+        }
+        .profile-link-btn[href*="locket.cam"]:hover i {
+            color: #fffc00;
+            text-shadow: 0 0 8px rgba(255, 252, 0, 0.5);
+        }
+
+        .profile-link-btn[href*="fptshop.com"]:hover {
+            border-color: rgba(250, 204, 21, 0.45);
+            box-shadow: 0 6px 20px rgba(250, 204, 21, 0.18);
+            background: rgba(250, 204, 21, 0.04);
+        }
+        .profile-link-btn[href*="fptshop.com"]:hover i {
+            color: #facc15;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+        }
+
+        .profile-link-btn .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-link-btn .btn-content i {
+            transition: color 0.3s ease;
+        }
+
+        .profile-link-btn i.fa-chevron-right { 
+            font-size: 10px; 
+            opacity: 0.3; 
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .profile-link-btn:hover i.fa-chevron-right {
+            transform: translateX(3px);
+            opacity: 0.8;
+        }
+
+        /* Vibes/Interests Grid */
+        .interests-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px; 
+            width: 100%;
+            padding-top: 20px; 
+            border-top: 1px solid var(--border-white-10);
+        }
+
+        .interest-card {
+            position: relative; 
+            height: 75px; 
+            border-radius: 18px; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            border: 1px solid var(--border-white-10); 
+            background: rgba(255, 255, 255, 0.02);
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .interest-card img { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.38) saturate(0.85); 
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .interest-card i {
+            position: relative;
+            z-index: 2;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            transition: opacity 0.2s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        .interest-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .interest-card[href*="spotify"]:hover i { color: #1ed760; }
+        .interest-card[href*="youtu"]:hover i { color: #ff0000; }
+
+        .interest-card span {
+            position: relative;
+            z-index: 2;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-white);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .interest-card:hover { 
+            transform: translateY(-4px) translateZ(22px); 
+            border-color: var(--border-white-20); 
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.05);
+        }
+
+        .interest-card:hover img { 
+            transform: scale(1.12);
+            filter: brightness(0.5) saturate(1); 
+        }
+
+        .interest-card:hover i {
+            opacity: 0;
+        }
+
+        .interest-card:hover span {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Footer styling */
+        .profile-footer { 
+            margin-top: 25px; 
+            font-size: 8px; 
+            color: var(--text-white); 
+            opacity: 0.5; 
+            letter-spacing: 2.5px; 
+        }
+
+        /* 3D Parallax & Staggered Animations */
+        .links-wrapper a:nth-child(1) { transform: translateZ(15px); animation: fadeInUp-links-1 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.35s; }
+        .links-wrapper a:nth-child(2) { transform: translateZ(15px); animation: fadeInUp-links-2 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.4s; }
+        .links-wrapper a:nth-child(3) { transform: translateZ(15px); animation: fadeInUp-links-3 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.45s; }
+        .links-wrapper a:nth-child(4) { transform: translateZ(15px); animation: fadeInUp-links-4 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.5s; }
+
+        .interests-grid a:nth-child(1) { transform: translateZ(15px); animation: fadeInUp-interests-1 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.55s; }
+        .interests-grid a:nth-child(2) { transform: translateZ(15px); animation: fadeInUp-interests-2 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.6s; }
+        .interests-grid a:nth-child(3) { transform: translateZ(15px); animation: fadeInUp-interests-3 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.65s; }
+        
+        .profile-footer {
+            transform: translateZ(10px);
+            animation: fadeInUp-footer 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: 0.7s;
+        }
+
+        /* Staggered fadeInUp keyframes per layer */
+        @keyframes fadeInUp-card      { from { opacity: 0; transform: translateY(30px) rotateX(0deg) rotateY(0deg) scale3d(0.95, 0.95, 0.95); } to { opacity: 1; transform: translateY(0) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1); } }
+        @keyframes fadeInUp-badge     { from { opacity: 0; transform: translate3d(0, 20px, 25px); } to { opacity: 1; transform: translate3d(0, 0, 25px); } }
+        @keyframes fadeInUp-avatar    { from { opacity: 0; transform: translate3d(0, 20px, 40px); } to { opacity: 1; transform: translate3d(0, 0, 40px); } }
+        @keyframes fadeInUp-name      { from { opacity: 0; transform: translate3d(0, 20px, 30px); } to { opacity: 1; transform: translate3d(0, 0, 30px); } }
+        @keyframes fadeInUp-bio       { from { opacity: 0; transform: translate3d(0, 20px, 25px); } to { opacity: 1; transform: translate3d(0, 0, 25px); } }
+        @keyframes fadeInUp-music     { from { opacity: 0; transform: translate3d(0, 20px, 20px); } to { opacity: 1; transform: translate3d(0, 0, 20px); } }
+        
+        @keyframes fadeInUp-links-1   { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        @keyframes fadeInUp-links-2   { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        @keyframes fadeInUp-links-3   { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        @keyframes fadeInUp-links-4   { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+
+        @keyframes fadeInUp-interests-1 { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        @keyframes fadeInUp-interests-2 { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        @keyframes fadeInUp-interests-3 { from { opacity: 0; transform: translate3d(0, 20px, 15px); } to { opacity: 1; transform: translate3d(0, 0, 15px); } }
+        
+        @keyframes fadeInUp-footer    { from { opacity: 0; transform: translate3d(0, 20px, 10px); } to { opacity: 1; transform: translate3d(0, 0, 10px); } }
+
+        /* Rotate keyframes */
+        @keyframes rotate-clockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes rotate-counter {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Media Query for Mobile (max-width: 480px) */
+        @media (max-width: 480px) {
+            body {
+                overflow-y: auto; 
+                padding: 10px 0;
+            }
+            .card-container {
+                padding: 10px;
+                perspective: none !important; /* Disable 3D perspective to prevent rasterization blur */
+            }
+            .profile-card {
+                max-width: 295px; 
+                padding: 24px 16px 18px; 
+                background: rgba(0, 0, 0, 0.42) !important; /* Semi-transparent black for high contrast readability */
+                backdrop-filter: none !important; /* Disable backdrop blur on mobile to fix fuzzy texture bugs in Safari/Chrome */
+                -webkit-backdrop-filter: none !important;
+                border-radius: 2rem;
+                transform-style: flat !important;
+                transform: none !important; /* Disable 3D rotate tilt on mobile */
+                animation: fadeInUp-mobile 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            
+            /* Disable 3D transforms and use clean 2D transitions for mobile */
+            .greeting-badge {
+                margin-bottom: 12px;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.1s;
+            }
+            .avatar-box {
+                width: 82px;
+                height: 82px;
+                margin-bottom: 12px;
+                transform-style: flat !important;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.15s;
+            }
+            .avatar-ring-1 {
+                inset: -3px;
+                transform: none !important;
+                animation: rotate-clockwise 20s linear infinite !important;
+            }
+            .avatar-ring-2 {
+                inset: -7px;
+                transform: none !important;
+                animation: rotate-counter 25s linear infinite !important;
+            }
+            .avatar-box.playing .avatar-ring-1 {
+                animation: rotate-clockwise 7s linear infinite !important;
+            }
+            .avatar-box.playing .avatar-ring-2 {
+                animation: rotate-counter 9s linear infinite !important;
+            }
+            .name-title {
+                font-size: 1.125rem;
+                margin-bottom: 2px;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.2s;
+            }
+            .bio-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 14px;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.25s;
+            }
+            .music-player {
+                padding: 8px 12px;
+                margin-bottom: 16px;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.3s;
+            }
+            .music-cover {
+                width: 32px;
+                height: 32px;
+            }
+            .music-title {
+                font-size: 10px;
+                max-width: 105px;
+            }
+            .music-artist {
+                font-size: 8px;
+            }
+            .visualizer {
+                gap: 1.8px;
+                height: 12px;
+            }
+            .bar {
+                width: 1.5px;
+            }
+            .play-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 8px;
+            }
+            .links-wrapper {
+                gap: 8px;
+                margin-bottom: 16px;
+            }
+            .profile-link-btn {
+                padding: 10px 14px;
+                font-size: 12px;
+                border-radius: 14px;
+                transform: none !important;
+                transition: background 0.3s ease, border-color 0.3s ease;
+            }
+            .profile-link-btn:hover {
+                transform: none !important;
+            }
+            
+            .links-wrapper a:nth-child(1) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.35s; }
+            .links-wrapper a:nth-child(2) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.4s; }
+            .links-wrapper a:nth-child(3) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.45s; }
+            .links-wrapper a:nth-child(4) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.5s; }
+
+            .profile-link-btn i.fa-chevron-right {
+                font-size: 8px;
+            }
+            .interests-grid {
+                padding-top: 14px;
+                gap: 8px;
+            }
+            .interest-card {
+                height: 62px;
+                border-radius: 14px;
+                transform: none !important;
+            }
+            .interest-card:hover {
+                transform: none !important;
+            }
+            
+            .interests-grid a:nth-child(1) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.55s; }
+            .interests-grid a:nth-child(2) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.6s; }
+            .interests-grid a:nth-child(3) { animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.65s; }
+
+            .interest-card i {
+                font-size: 14px;
+            }
+            .interest-card span {
+                font-size: 8px;
+            }
+            .profile-footer {
+                margin-top: 16px;
+                transform: none !important;
+                animation: fadeInUp-mobile 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+                animation-delay: 0.7s;
+            }
+
+            @keyframes fadeInUp-mobile {
+                from {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+    <!-- Full-screen background raw video with contrast enhancers -->
+    <video class="video-background" id="bg-video" autoplay loop muted playsinline>
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4" type="video/mp4">
+    </video>
+
+    <!-- Interactive Canvas Snow overlaying background video -->
+    <canvas id="snow-canvas"></canvas>
+
+
+
+    <!-- Zoom overlay -->
+    <div class="avatar-overlay" id="avatarOverlay" onclick="closeAvatar()">
+        <img src="avatar.jpg" alt="Zoomed Avatar">
+    </div>
+
+    <!-- Centered Card Container -->
+    <div class="card-container">
+        
+        <!-- Glass card profile -->
+        <div class="profile-card liquid-glass">
+            
+
+
+            <!-- Dynamic greeting -->
+            <div class="greeting-badge" id="greetingBadge">WELCOME</div>
+
+            <!-- Concentric Cyber Rings Avatar -->
+            <div class="avatar-box" onclick="openAvatar(event)">
+                <div class="avatar-ring-1"></div>
+                <div class="avatar-ring-2"></div>
+                <div class="avatar-img-wrap">
+                    <img src="avatar.jpg" alt="Nguyễn Danh Thái">
+                </div>
+            </div>
+
+            <!-- User profile header -->
+            <h1 class="name-title">
+                Nguyễn Danh Thái
+                <i class="fa-solid fa-circle-check verify-badge" title="Verified Account"></i>
+            </h1>
+
+            <!-- Dynamic bio subtitle -->
+            <div class="bio-subtitle">
+                <span id="typed-text"></span><span class="cursor">|</span>
+            </div>
+
+            <!-- Music Player Widget (Local MP3 player) -->
+            <div class="music-player">
+                <audio id="bg-music" loop src="Anh Muốn Nhìn Thấy Em.mp3"></audio>
+                <div class="music-info">
+                    <img src="avatar1.jpg" alt="Music Cover" class="music-cover" id="musicCover">
+                    <div class="music-text">
+                        <span class="music-title">Anh Muốn Nhìn Thấy Em</span>
+                        <span class="music-artist">The Wind x Dangrangto</span>
+                    </div>
+                </div>
+                <div class="music-controls">
+                    <div class="visualizer" id="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <button class="play-btn paused-pulse" id="playBtn" onclick="togglePlay(event)">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Connections links -->
+            <div class="links-wrapper">
+                <a href="https://www.facebook.com/RobinnThai" class="profile-link-btn" target="_blank">
+                    <span class="btn-content"><i class="fab fa-facebook-f"></i> Facebook</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <a href="https://www.instagram.com/robinn_thai/" class="profile-link-btn" target="_blank">
+                    <span class="btn-content"><i class="fab fa-instagram"></i> Instagram</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <a href="https://locket.cam/robinthai" class="profile-link-btn" target="_blank">
+                    <span class="btn-content"><i class="fa-solid fa-camera"></i> Locket Gallery</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <a href="https://cdn2.fptshop.com.vn/small/Meme_meo_tang_hoa_13_44caa2bf0e.jpg" class="profile-link-btn" target="_blank">
+                    <span class="btn-content"><i class="fas fa-crown"></i> Give You</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <!-- Interests Vibes Grid with crystal-clear Full HD thumbnails -->
+            <div class="interests-grid">
+                <a href="https://youtu.be/9lhBlTdvd3U?si=Tqnhp0X-HNdM8O5N" class="interest-card" target="_blank" title="My Favorite Song">
+                    <img src="https://img.youtube.com/vi/ogVL5Hdh8Po/maxresdefault.jpg" loading="lazy">
+                    <i class="fa-brands fa-youtube"></i>
+                    <span>Favorite Song</span>
+                </a>
+                <a href="https://open.spotify.com/playlist/7Cyfwk19CxzHrkXvNt57J5?si=a2f61841384a4139" class="interest-card" target="_blank" title="Chill Spotify Playlist">
+                    <img src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?q=85&w=1280" loading="lazy">
+                    <i class="fa-brands fa-spotify"></i>
+                    <span>Chill Playlist</span>
+                </a>
+                <a href="https://youtu.be/CbtnHbJbzxU?si=sNP0cemjqdN4tQNz" class="interest-card" target="_blank" title="Favorite Video">
+                    <img src="https://img.youtube.com/vi/CbtnHbJbzxU/maxresdefault.jpg" loading="lazy">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Fav Video</span>
+                </a>
+            </div>
+
+            <div class="profile-footer">ROBIN THAI • EST 2004</div>
+        </div>
+
+    </div>
+
+    <!-- Zoom overlay javascript -->
+    <script>
+        const overlay = document.getElementById('avatarOverlay');
+        
+        function openAvatar(event) { 
+            if (event) event.stopPropagation();
+            overlay.style.display = 'flex'; 
+        }
+        function closeAvatar() { 
+            overlay.style.display = 'none'; 
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeAvatar();
+        });
+    </script>
+
+
+
+    <!-- Typewriter effect for bio subtitle -->
+    <script>
+        const bioTexts = ["The Winter Prince", "Creative Student", "Music Enthusiast", "Vibe Catcher"];
+        let textIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+        const typedTextSpan = document.getElementById("typed-text");
+        
+        function typeBio() {
+            const currentText = bioTexts[textIdx];
+            if (isDeleting) {
+                typedTextSpan.textContent = currentText.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                typedTextSpan.textContent = currentText.substring(0, charIdx + 1);
+                charIdx++;
+            }
+            
+            let typeSpeed = isDeleting ? 40 : 80;
+            
+            if (!isDeleting && charIdx === currentText.length) {
+                typeSpeed = 1600; 
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                textIdx = (textIdx + 1) % bioTexts.length;
+                typeSpeed = 300; 
+            }
+            
+            setTimeout(typeBio, typeSpeed);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(typeBio, 1000);
+        });
+    </script>
+
+    <!-- Dynamic Greeting Badge Controller -->
+    <script>
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const badge = document.getElementById('greetingBadge');
+            if (hour < 12) {
+                badge.textContent = "Chào buổi sáng ☀️";
+            } else if (hour < 18) {
+                badge.textContent = "Chào buổi chiều 🌤️";
+            } else {
+                badge.textContent = "Chào buổi tối 🌙";
+            }
+        }
+        updateGreeting();
+    </script>
+
+    <!-- Local MP3 Audio Controller & Real-time Web Audio API Visualizer -->
+    <script>
+        const bgMusic = document.getElementById('bg-music');
+        const playBtn = document.getElementById('playBtn');
+        const musicCover = document.getElementById('musicCover');
+        const avatarBox = document.querySelector('.avatar-box');
+        const bars = document.querySelectorAll('.bar');
+
+        bgMusic.volume = 0.45;
+
+        // Web Audio API Variables
+        let audioCtx;
+        let analyser;
+        let source;
+        let dataArray;
+        let bufferLength;
+        let animationFrameId;
+        let isAudioConnected = false;
+
+        function initVisualizer() {
+            if (isAudioConnected) return;
+            
+            // Create Audio Context and connect analyser node
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64; // Increased size to get more data points for 10 bars
+            
+            source = audioCtx.createMediaElementSource(bgMusic);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            
+            bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+            isAudioConnected = true;
+        }
+
+        // Loop to render visualizer bars based on frequency bins
+        function drawVisualizer() {
+            animationFrameId = requestAnimationFrame(drawVisualizer);
+            if (bgMusic.paused) return;
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            for (let i = 0; i < bars.length; i++) {
+                // Map audio frequencies to 10 visualizer bars with a nice spread
+                const val = dataArray[i * 2] || 0;
+                const height = 3 + (val / 255) * 13; // Min 3px, max 16px
+                bars[i].style.height = `${height}px`;
+            }
+        }
+
+        function togglePlay(event) {
+            if (event) event.stopPropagation();
+            
+            // Initialize audio nodes on user click gesture (required by browsers)
+            initVisualizer();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (bgMusic.paused) {
+                bgMusic.play()
+                    .then(() => {
+                        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                        playBtn.classList.remove('paused-pulse');
+                        musicCover.classList.add('playing');
+                        avatarBox.classList.add('playing');
+                        drawVisualizer();
+                    })
+                    .catch(error => {
+                        console.log("Audio playback failed: ", error);
+                    });
+            } else {
+                bgMusic.pause();
+                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                playBtn.classList.add('paused-pulse');
+                musicCover.classList.remove('playing');
+                avatarBox.classList.remove('playing');
+                cancelAnimationFrame(animationFrameId);
+                // Reset bars to resting position
+                bars.forEach(bar => bar.style.height = '3px');
+            }
+        }
+    </script>
+
+    <!-- Interactive Canvas Snow with Mouse Wind -->
+    <script>
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = -1000;
+        let mouseY = -1000;
+        let targetWind = 0;
+        let currentWind = 0;
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            
+            const count = window.innerWidth < 768 ? 45 : 75;
+            
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2.2 + 0.8, // Slightly larger for better visual glow
+                    speed: Math.random() * 0.5 + 0.2,
+                    velX: Math.random() * 0.4 - 0.2,
+                    opacity: Math.random() * 0.6 + 0.15,
+                    color: Math.random() > 0.4 ? 'white' : 'cyan' // 40% cyan glow, 60% white
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            currentWind += (targetWind - currentWind) * 0.04;
+            
+            particles.forEach(p => {
+                p.y += p.speed;
+                p.x += p.velX + currentWind;
+                
+                // Mouse repulsion force field physics
+                const dx = p.x - mouseX;
+                const dy = p.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const forceRadius = 130;
+                
+                if (dist < forceRadius) {
+                    const force = (forceRadius - dist) / forceRadius; // 0 to 1
+                    const angle = Math.atan2(dy, dx);
+                    p.x += Math.cos(angle) * force * 3.5;
+                    p.y += Math.sin(angle) * force * 1.5;
+                }
+                
+                // Wrap boundaries
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+                if (p.x > canvas.width) {
+                    p.x = 0;
+                } else if (p.x < 0) {
+                    p.x = canvas.width;
+                }
+                
+                // Render drift particles with selective glow color
+                ctx.fillStyle = p.color === 'cyan' ? `rgba(56, 189, 248, ${p.opacity})` : `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            const relX = (e.clientX / window.innerWidth) * 2 - 1; 
+            targetWind = relX * 0.65;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouseX = -1000;
+            mouseY = -1000;
+        });
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animate();
+    </script>
+
+    <!-- 3D Tilt Card and Background Video Parallax Shift & Visibility Toggle -->
+    <script>
+        const card = document.querySelector('.profile-card');
+        const container = document.querySelector('.card-container');
+        const bgVideo = document.getElementById('bg-video');
+        const viewBgBtn = document.getElementById('viewBgBtn');
+        const tapHint = document.getElementById('tapHint');
+        
+        let isCardHidden = false;
+        let lastHideTime = 0;
+
+        function toggleCardVisibility(event) {
+            if (event) event.stopPropagation();
+            
+            // Fade out the card container smoothly
+            container.style.opacity = '0';
+            container.style.pointerEvents = 'none';
+            container.style.transform = 'scale3d(0.95, 0.95, 0.95)';
+            container.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+            
+            // Hide the eye button
+            viewBgBtn.style.opacity = '0';
+            viewBgBtn.style.pointerEvents = 'none';
+            
+            // Show the tap instruction hint
+            tapHint.classList.add('show');
+            
+            isCardHidden = true;
+            lastHideTime = Date.now();
+        }
+
+        function restoreCardVisibility() {
+            if (!isCardHidden) return;
+            
+            // Prevent immediate restore from the same touch event bubble
+            if (Date.now() - lastHideTime < 350) return;
+            
+            // Fade card back in
+            container.style.opacity = '1';
+            container.style.pointerEvents = 'auto';
+            container.style.transform = 'none';
+            
+            // Show eye button
+            viewBgBtn.style.opacity = '1';
+            viewBgBtn.style.pointerEvents = 'auto';
+            
+            // Hide the hint
+            tapHint.classList.remove('show');
+            
+            isCardHidden = false;
+        }
+
+        // Tap screen to restore card
+        window.addEventListener('click', () => {
+            if (isCardHidden) restoreCardVisibility();
+        });
+        window.addEventListener('touchstart', () => {
+            if (isCardHidden) restoreCardVisibility();
+        });
+
+        // Tilt & Parallax animation for desktop (mouse)
+        container.addEventListener('mousemove', (e) => {
+            if (isCardHidden) return;
+            
+            const cardRect = card.getBoundingClientRect();
+            const cardWidth = cardRect.width;
+            const cardHeight = cardRect.height;
+            
+            // Relative cursor positions inside card
+            const mouseX = e.clientX - cardRect.left - cardWidth / 2;
+            const mouseY = e.clientY - cardRect.top - cardHeight / 2;
+            
+            // Maximum tilt angle (degrees)
+            const maxRotateX = 8;
+            const maxRotateY = 8;
+            
+            const rotateX = -(mouseY / (cardHeight / 2)) * maxRotateX;
+            const rotateY = (mouseX / (cardWidth / 2)) * maxRotateY;
+            
+            // Set dynamic spotlight glow variables
+            const glowX = ((e.clientX - cardRect.left) / cardWidth) * 100;
+            const glowY = ((e.clientY - cardRect.top) / cardHeight) * 100;
+            card.style.setProperty('--glow-x', `${glowX}%`);
+            card.style.setProperty('--glow-y', `${glowY}%`);
+            
+            // Apply 3D rotation and translate hover scale
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02) translateY(-4px)`;
+
+            // Parallax panning of background video
+            const bgMoveX = (e.clientX - window.innerWidth / 2) * -0.015;
+            const bgMoveY = (e.clientY - window.innerHeight / 2) * -0.015;
+            bgVideo.style.transform = `scale(1.06) translate(${bgMoveX}px, ${bgMoveY}px)`;
+        });
+        
+        // Restore card and background position on mouse leave
+        container.addEventListener('mouseleave', () => {
+            if (isCardHidden) return;
+            card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1) translateY(0px)`;
+            card.style.setProperty('--glow-x', `50%`);
+            card.style.setProperty('--glow-y', `50%`);
+            bgVideo.style.transform = `scale(1.06) translate(0px, 0px)`;
+        });
+
+        // Gyroscope tilt parallax for mobile devices
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                if (isCardHidden) return;
+                // Avoid running if beta/gamma orientation is not supported/null
+                if (e.beta === null || e.gamma === null) return;
+
+                // beta (front/back tilt: -180 to 180). Normal holding angle is ~45 degrees.
+                // gamma (left/right tilt: -90 to 90).
+                const pitch = Math.max(-15, Math.min(15, e.beta - 45)); 
+                const roll = Math.max(-15, Math.min(15, e.gamma)); 
+
+                // Map pitch and roll to rotation degrees (max 6 degrees for smooth tilt)
+                const rotateX = -(pitch / 15) * 6;
+                const rotateY = (roll / 15) * 6;
+
+                // Apply rotation
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+
+                // Pan background video slightly for parallax depth
+                const bgMoveX = (roll / 15) * -12;
+                const bgMoveY = (pitch / 15) * -12;
+                bgVideo.style.transform = `scale(1.08) translate(${bgMoveX}px, ${bgMoveY}px)`;
+            });
+        }
+
+        // Periodic card shine swipe animation (every 7 seconds)
+        setInterval(() => {
+            if (isCardHidden) return;
+            card.classList.add('animate-shine');
+            setTimeout(() => {
+                card.classList.remove('animate-shine');
+            }, 1200);
+        }, 7000);
+
+        // Immediate card shine swipe on hover
+        card.addEventListener('mouseenter', () => {
+            if (isCardHidden) return;
+            card.classList.add('animate-shine');
+            setTimeout(() => {
+                card.classList.remove('animate-shine');
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

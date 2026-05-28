@@ -890,10 +890,12 @@
 
         .moments-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+            overflow: hidden;
+            padding: 12px 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .moments-content::-webkit-scrollbar {
@@ -1153,6 +1155,295 @@
             display: inline;
         }
 
+        /* Tinder Swiper CSS Styles */
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .card-stack {
+            position: relative;
+            width: 280px;
+            height: 370px;
+            perspective: 1000px;
+            margin-top: 5px;
+        }
+
+        .polaroid-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 10px 10px 20px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 2px rgba(0, 0, 0, 0.15);
+            color: #111111;
+            user-select: none;
+            cursor: grab;
+            transform-origin: center bottom;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15), opacity 0.3s ease, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .polaroid-card:active {
+            cursor: grabbing;
+        }
+
+        /* 3D Stack effects for background cards */
+        .polaroid-card.back-card-1 {
+            transform: translateY(-8px) scale(0.96) rotate(1deg);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.9;
+            background: #fdfdfd;
+        }
+
+        .polaroid-card.back-card-2 {
+            transform: translateY(-16px) scale(0.92) rotate(-1.5deg);
+            z-index: 9;
+            pointer-events: none;
+            opacity: 0.7;
+            background: #f7f7f7;
+        }
+
+        .polaroid-card.back-card-hidden {
+            transform: translateY(-24px) scale(0.88) rotate(0deg);
+            z-index: 8;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .polaroid-media {
+            width: 100%;
+            height: 290px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #090e17;
+            position: relative;
+        }
+
+        .polaroid-media img, .polaroid-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .polaroid-caption {
+            margin-top: 10px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Tinder-style badges on active cards during swipe */
+        .swipe-badge {
+            position: absolute;
+            top: 25px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid;
+            opacity: 0;
+            z-index: 15;
+            transition: opacity 0.1s ease;
+        }
+
+        .polaroid-card .badge-like {
+            left: 20px;
+            color: #10b981;
+            border-color: #10b981;
+            transform: rotate(-10deg);
+        }
+
+        .polaroid-card .badge-nope {
+            right: 20px;
+            color: #ef4444;
+            border-color: #ef4444;
+            transform: rotate(10deg);
+        }
+
+        /* Swiper action buttons row */
+        .swiper-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 15px;
+            width: 100%;
+            z-index: 20;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-nope {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .btn-nope:hover {
+            background: rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .btn-rewind {
+            color: #eab308;
+            border-color: rgba(234, 179, 8, 0.3);
+            width: 38px;
+            height: 38px;
+            font-size: 13px;
+        }
+        .btn-rewind:hover {
+            background: rgba(234, 179, 8, 0.15);
+            box-shadow: 0 0 10px rgba(234, 179, 8, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .btn-love {
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .btn-love:hover {
+            background: rgba(16, 185, 129, 0.15);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+            transform: translateY(-2px);
+        }
+
+        /* End of Deck State styling */
+        .end-deck-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            width: 100%;
+            height: 100%;
+            color: var(--text-white);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .end-deck-card i {
+            font-size: 36px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .end-deck-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .end-deck-card p {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-bottom: 18px;
+        }
+
+        .end-deck-card button {
+            background: var(--text-white);
+            color: var(--bg-black);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .end-deck-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(255,255,255,0.2);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 8px var(--accent)); }
+        }
+
+        .swiper-lyrics {
+            position: relative;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            width: 100%;
+            z-index: 10003;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-white);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 15px rgba(56, 189, 248, 0.6);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(4px) scale(0.95);
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            line-height: 1.4;
+        }
+
+        #swiperLyricsText {
+            background: linear-gradient(to right, var(--accent) var(--progress, 0%), var(--text-white) var(--progress, 0%));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline;
+        }
+
+        @media (max-width: 480px) {
+            .swiper-actions {
+                gap: 12px;
+                margin-top: 10px;
+            }
+            .card-stack {
+                width: 250px;
+                height: 330px;
+            }
+            .polaroid-media {
+                height: 250px;
+            }
+            .swiper-lyrics {
+                font-size: 11px;
+                margin-top: 10px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1184,8 +1475,22 @@
                 </button>
             </div>
             <div class="moments-content">
-                <div class="moments-grid-layout" id="momentsGrid">
-                    <!-- Dynamic moments items will be loaded here -->
+                <div class="swiper-container" id="swiperContainer">
+                    <div class="card-stack" id="cardStack"></div>
+                    
+                    <!-- Synced Lyrics Display for Swiper -->
+                    <div class="swiper-lyrics" id="swiperLyricsContainer">
+                        <span class="story-lyrics-box">
+                            <span id="swiperLyricsText"></span>
+                        </span>
+                    </div>
+                    
+                    <!-- Swipe Action Buttons -->
+                    <div class="swiper-actions">
+                        <button class="action-btn btn-nope" onclick="swipeLeftCurrentCard(event)" title="Bỏ qua"><i class="fa-solid fa-xmark"></i></button>
+                        <button class="action-btn btn-rewind" onclick="rewindDeck(event)" title="Xem lại hình trước"><i class="fa-solid fa-rotate-left"></i></button>
+                        <button class="action-btn btn-love" onclick="swipeRightCurrentCard(event)" title="Thích"><i class="fa-solid fa-heart"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1722,13 +2027,17 @@
             { type: 'image', url: 'moment/moment5.JPG' },
             { type: 'image', url: 'moment/moment6.JPG' },
             { type: 'image', url: 'moment/moment7.JPG' },
-            { type: 'image', url: 'moment/moment8.JPG' },
+            { type: 'image', url: 'moment/moment8.jpg' },
             { type: 'image', url: 'moment/moment9.JPG' },
             { type: 'image', url: 'moment/moment10.JPG' },
-            { type: 'image', url: 'moment/moment11.JPG' },
-            { type: 'image', url: 'moment/moment12.JPG' },
+            { type: 'image', url: 'moment/moment11.jpg' },
+            { type: 'image', url: 'moment/moment12.jpg' },
             { type: 'image', url: 'moment/moment13.JPG' },
-            { type: 'image', url: 'moment/moment14.JPG' },
+            { type: 'image', url: 'moment/moment14.jpg' },
+            { type: 'image', url: 'moment/moment15.JPG' },
+            { type: 'image', url: 'moment/moment16.jpg' },
+            { type: 'image', url: 'moment/moment17.jpg' },
+            { type: 'image', url: 'moment/moment18.jpg' },
             { type: 'video', url: 'moment/video1.mp4' },
             { type: 'video', url: 'moment/video2.mp4' },
         ];
@@ -1813,8 +2122,55 @@
         // Bù đắp độ trễ (giây) giúp khớp chữ sớm hơn: bù trừ thời gian hiệu ứng chuyển chữ và độ trễ âm thanh
         const LYRICS_OFFSET = 0.35;
 
+        let lastTexts = {};
+
+        function updateTargetLyrics(container, textEl, activeText, activeIdx, currentTime) {
+            if (!container || !textEl) return;
+            const containerId = container.id;
+            
+            if (lastTexts[containerId] !== activeText) {
+                lastTexts[containerId] = activeText;
+                if (activeText === "") {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(4px) scale(0.95)';
+                    setTimeout(() => { 
+                        textEl.textContent = ""; 
+                        textEl.style.setProperty('--progress', '0%');
+                    }, 250);
+                } else {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(4px) scale(0.95)';
+                    setTimeout(() => {
+                        textEl.textContent = activeText;
+                        textEl.style.setProperty('--progress', '0%');
+                        container.style.opacity = '1';
+                        container.style.transform = 'translateY(0) scale(1)';
+                    }, 150);
+                }
+            }
+            
+            if (activeIdx !== -1 && textEl.textContent === activeText) {
+                const activeLine = MOMENTS_LYRICS[activeIdx];
+                const nextLine = MOMENTS_LYRICS[activeIdx + 1];
+                let progress = 0;
+                if (nextLine) {
+                    const duration = nextLine.time - activeLine.time;
+                    if (duration > 0) {
+                        progress = Math.max(0, Math.min(100, ((currentTime - activeLine.time) / duration) * 100));
+                    }
+                } else {
+                    const duration = 5;
+                    progress = Math.max(0, Math.min(100, ((currentTime - activeLine.time) / duration) * 100));
+                }
+                textEl.style.setProperty('--progress', `${progress}%`);
+            }
+        }
+
         function updateLyricsAndSweep() {
-            if (lightboxOverlay.style.display === 'flex' && momentsMusic) {
+            const isLightboxOpen = lightboxOverlay && lightboxOverlay.style.display === 'flex';
+            const isMomentsOpen = momentsOverlay && momentsOverlay.style.display === 'flex';
+
+            if ((isLightboxOpen || isMomentsOpen) && momentsMusic) {
                 const currentTime = momentsMusic.currentTime + LYRICS_OFFSET;
                 let activeText = "";
                 let activeIdx = -1;
@@ -1828,47 +2184,343 @@
                     }
                 }
                 
-                const lyricsContainer = document.getElementById('storyLyricsContainer');
-                const lyricsText = document.getElementById('storyLyricsText');
-                
-                if (lyricsText && lastActiveText !== activeText) {
-                    lastActiveText = activeText;
-                    if (activeText === "") {
-                        lyricsContainer.style.opacity = '0';
-                        lyricsContainer.style.transform = 'translateY(4px) scale(0.95)';
-                        setTimeout(() => { 
-                            lyricsText.textContent = ""; 
-                            lyricsText.style.setProperty('--progress', '0%');
-                        }, 250);
-                    } else {
-                        lyricsContainer.style.opacity = '0';
-                        lyricsContainer.style.transform = 'translateY(4px) scale(0.95)';
-                        setTimeout(() => {
-                            lyricsText.textContent = activeText;
-                            lyricsText.style.setProperty('--progress', '0%');
-                            lyricsContainer.style.opacity = '1';
-                            lyricsContainer.style.transform = 'translateY(0) scale(1)';
-                        }, 150);
-                    }
+                if (isLightboxOpen) {
+                    const lyricsContainer = document.getElementById('storyLyricsContainer');
+                    const lyricsText = document.getElementById('storyLyricsText');
+                    updateTargetLyrics(lyricsContainer, lyricsText, activeText, activeIdx, currentTime);
                 }
                 
-                if (activeIdx !== -1 && lyricsText && lyricsText.textContent === activeText) {
-                    const activeLine = MOMENTS_LYRICS[activeIdx];
-                    const nextLine = MOMENTS_LYRICS[activeIdx + 1];
-                    let progress = 0;
-                    if (nextLine) {
-                        const duration = nextLine.time - activeLine.time;
-                        if (duration > 0) {
-                            progress = Math.max(0, Math.min(100, ((currentTime - activeLine.time) / duration) * 100));
-                        }
-                    } else {
-                        const duration = 5;
-                        progress = Math.max(0, Math.min(100, ((currentTime - activeLine.time) / duration) * 100));
-                    }
-                    lyricsText.style.setProperty('--progress', `${progress}%`);
+                if (isMomentsOpen) {
+                    const lyricsContainer = document.getElementById('swiperLyricsContainer');
+                    const lyricsText = document.getElementById('swiperLyricsText');
+                    updateTargetLyrics(lyricsContainer, lyricsText, activeText, activeIdx, currentTime);
                 }
             }
             lyricsAnimationId = requestAnimationFrame(updateLyricsAndSweep);
+        }
+
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let activeCard = null;
+        let hasDragged = false;
+
+        function renderMomentsSwiper() {
+            const cardStack = document.getElementById('cardStack');
+            if (!cardStack) return;
+            
+            cardStack.innerHTML = '';
+            
+            if (MOMENTS_CONFIG.length === 0) {
+                showEndDeck();
+                return;
+            }
+            
+            for (let i = MOMENTS_CONFIG.length - 1; i >= 0; i--) {
+                const moment = MOMENTS_CONFIG[i];
+                const card = document.createElement('div');
+                card.className = 'polaroid-card';
+                card.dataset.index = i;
+                
+                const badgeLike = document.createElement('div');
+                badgeLike.className = 'swipe-badge badge-like';
+                badgeLike.innerText = 'LOVE';
+                
+                const badgeNope = document.createElement('div');
+                badgeNope.className = 'swipe-badge badge-nope';
+                badgeNope.innerText = 'NOPE';
+                
+                card.appendChild(badgeLike);
+                card.appendChild(badgeNope);
+                
+                const mediaDiv = document.createElement('div');
+                mediaDiv.className = 'polaroid-media';
+                
+                if (moment.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = moment.url;
+                    img.alt = `Moment ${i + 1}`;
+                    img.loading = 'lazy';
+                    mediaDiv.appendChild(img);
+                } else if (moment.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = moment.url;
+                    video.loop = true;
+                    video.muted = false;
+                    video.volume = 0.15;
+                    video.playsInline = true;
+                    video.style.objectFit = 'cover';
+                    mediaDiv.appendChild(video);
+                }
+                
+                card.appendChild(mediaDiv);
+                
+                const captionDiv = document.createElement('div');
+                captionDiv.className = 'polaroid-caption';
+                captionDiv.innerText = moment.type === 'image' 
+                    ? `📸 Khoảnh khắc #${i + 1}` 
+                    : `🎥 Video ngắn #${i + 1}`;
+                
+                card.appendChild(captionDiv);
+                
+                initDragEvents(card);
+                
+                cardStack.appendChild(card);
+            }
+            
+            updateStackClasses();
+            playTopCardMedia();
+        }
+
+        function updateStackClasses() {
+            const cards = Array.from(document.querySelectorAll('.polaroid-card:not(.swiped)'));
+            
+            cards.forEach((card, idx) => {
+                const relativeIndex = cards.length - 1 - idx;
+                
+                card.classList.remove('back-card-1', 'back-card-2', 'back-card-hidden');
+                
+                if (relativeIndex === 0) {
+                    card.style.pointerEvents = 'auto';
+                    card.style.zIndex = '15';
+                } else if (relativeIndex === 1) {
+                    card.classList.add('back-card-1');
+                    card.style.zIndex = '14';
+                    card.style.pointerEvents = 'none';
+                } else if (relativeIndex === 2) {
+                    card.classList.add('back-card-2');
+                    card.style.zIndex = '13';
+                    card.style.pointerEvents = 'none';
+                } else {
+                    card.classList.add('back-card-hidden');
+                    card.style.zIndex = '12';
+                    card.style.pointerEvents = 'none';
+                }
+            });
+            
+            if (cards.length === 0) {
+                showEndDeck();
+            }
+        }
+
+        function playTopCardMedia() {
+            const allVideos = document.querySelectorAll('.polaroid-card video');
+            allVideos.forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
+            
+            const cards = Array.from(document.querySelectorAll('.polaroid-card:not(.swiped)'));
+            if (cards.length === 0) return;
+            
+            const topCard = cards[cards.length - 1];
+            const topVideo = topCard.querySelector('video');
+            if (topVideo) {
+                topVideo.play().catch(err => console.log('Video autoplay blocked:', err));
+            }
+        }
+
+        function initDragEvents(card) {
+            // Touch events
+            card.addEventListener('touchstart', dragStart, { passive: true });
+            card.addEventListener('touchmove', dragMove, { passive: false });
+            card.addEventListener('touchend', dragEnd);
+            
+            // Mouse events
+            card.addEventListener('mousedown', dragStart);
+        }
+
+        function dragStart(e) {
+            const cards = Array.from(document.querySelectorAll('.polaroid-card:not(.swiped)'));
+            if (cards.length === 0) return;
+            
+            const topCard = cards[cards.length - 1];
+            if (this !== topCard) return;
+            
+            activeCard = this;
+            isDragging = true;
+            hasDragged = false;
+            
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            
+            startX = clientX;
+            startY = clientY;
+            currentX = clientX;
+            currentY = clientY;
+            
+            activeCard.style.transition = 'none';
+            
+            if (!e.type.includes('touch')) {
+                document.addEventListener('mousemove', dragMove);
+                document.addEventListener('mouseup', dragEnd);
+            }
+        }
+
+        function dragMove(e) {
+            if (!isDragging || !activeCard) return;
+            
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            
+            currentX = clientX;
+            currentY = clientY;
+            
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+            
+            if (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6) {
+                hasDragged = true;
+            }
+            
+            if (hasDragged) {
+                if (e.cancelable) e.preventDefault();
+                const rotateDeg = deltaX * 0.08;
+                activeCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotateDeg}deg)`;
+                
+                const badgeLike = activeCard.querySelector('.badge-like');
+                const badgeNope = activeCard.querySelector('.badge-nope');
+                
+                if (deltaX > 20) {
+                    const opacity = Math.min(1, (deltaX - 20) / 80);
+                    if (badgeLike) badgeLike.style.opacity = opacity;
+                    if (badgeNope) badgeNope.style.opacity = 0;
+                } else if (deltaX < -20) {
+                    const opacity = Math.min(1, (-deltaX - 20) / 80);
+                    if (badgeNope) badgeNope.style.opacity = opacity;
+                    if (badgeLike) badgeLike.style.opacity = 0;
+                } else {
+                    if (badgeLike) badgeLike.style.opacity = 0;
+                    if (badgeNope) badgeNope.style.opacity = 0;
+                }
+            }
+        }
+
+        function dragEnd(e) {
+            if (!isDragging || !activeCard) return;
+            isDragging = false;
+            
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+            
+            const deltaX = currentX - startX;
+            const threshold = 100;
+            
+            activeCard.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15), opacity 0.3s ease';
+            
+            if (hasDragged) {
+                if (deltaX > threshold) {
+                    swipeRight(activeCard);
+                } else if (deltaX < -threshold) {
+                    swipeLeft(activeCard);
+                } else {
+                    activeCard.style.transform = 'translate(0, 0) rotate(0deg)';
+                    const badgeLike = activeCard.querySelector('.badge-like');
+                    const badgeNope = activeCard.querySelector('.badge-nope');
+                    if (badgeLike) badgeLike.style.opacity = 0;
+                    if (badgeNope) badgeNope.style.opacity = 0;
+                }
+            } else {
+                const cardIndex = parseInt(activeCard.dataset.index);
+                openStory(cardIndex);
+            }
+            
+            activeCard = null;
+        }
+
+        function swipeRight(card) {
+            card.classList.add('swiped');
+            card.style.transform = 'translate(400px, 60px) rotate(30deg)';
+            card.style.opacity = '0';
+            
+            const badgeLike = card.querySelector('.badge-like');
+            if (badgeLike) badgeLike.style.opacity = 1;
+            
+            setTimeout(() => {
+                card.style.display = 'none';
+                updateStackClasses();
+                playTopCardMedia();
+            }, 300);
+        }
+
+        function swipeLeft(card) {
+            card.classList.add('swiped');
+            card.style.transform = 'translate(-400px, 60px) rotate(-30deg)';
+            card.style.opacity = '0';
+            
+            const badgeNope = card.querySelector('.badge-nope');
+            if (badgeNope) badgeNope.style.opacity = 1;
+            
+            setTimeout(() => {
+                card.style.display = 'none';
+                updateStackClasses();
+                playTopCardMedia();
+            }, 300);
+        }
+
+        function swipeRightCurrentCard(event) {
+            if (event) event.stopPropagation();
+            const cards = Array.from(document.querySelectorAll('.polaroid-card:not(.swiped)'));
+            if (cards.length === 0) return;
+            const topCard = cards[cards.length - 1];
+            swipeRight(topCard);
+        }
+
+        function swipeLeftCurrentCard(event) {
+            if (event) event.stopPropagation();
+            const cards = Array.from(document.querySelectorAll('.polaroid-card:not(.swiped)'));
+            if (cards.length === 0) return;
+            const topCard = cards[cards.length - 1];
+            swipeLeft(topCard);
+        }
+
+        function rewindDeck(event) {
+            if (event) event.stopPropagation();
+            const cards = Array.from(document.querySelectorAll('.polaroid-card.swiped'));
+            if (cards.length === 0) return;
+            
+            const lastSwipedCard = cards[cards.length - 1];
+            lastSwipedCard.style.display = 'flex';
+            lastSwipedCard.classList.remove('swiped');
+            lastSwipedCard.style.transition = 'none';
+            
+            const side = Math.random() > 0.5 ? 1 : -1;
+            lastSwipedCard.style.transform = `translate(${side * 300}px, -100px) rotate(${side * 20}deg)`;
+            lastSwipedCard.style.opacity = '0';
+            
+            const badgeLike = lastSwipedCard.querySelector('.badge-like');
+            const badgeNope = lastSwipedCard.querySelector('.badge-nope');
+            if (badgeLike) badgeLike.style.opacity = 0;
+            if (badgeNope) badgeNope.style.opacity = 0;
+            
+            setTimeout(() => {
+                lastSwipedCard.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15), opacity 0.3s ease';
+                lastSwipedCard.style.transform = 'translate(0, 0) rotate(0deg)';
+                lastSwipedCard.style.opacity = '1';
+                updateStackClasses();
+                playTopCardMedia();
+            }, 30);
+        }
+
+        function showEndDeck() {
+            const cardStack = document.getElementById('cardStack');
+            if (!cardStack) return;
+            
+            cardStack.innerHTML = `
+                <div class="end-deck-card" onclick="event.stopPropagation()">
+                    <i class="fa-solid fa-face-smile-wink"></i>
+                    <h3>Đã xem hết khoảnh khắc!</h3>
+                    <p>Bấm nút bên dưới để xem lại từ đầu.</p>
+                    <button onclick="resetWholeDeck(event)">Xem lại</button>
+                </div>
+            `;
+        }
+
+        function resetWholeDeck(event) {
+            if (event) event.stopPropagation();
+            renderMomentsSwiper();
         }
 
         function initMomentsGallery() {
@@ -1879,73 +2531,27 @@
                 momentsCover.src = firstImage ? firstImage.url : MOMENTS_CONFIG[0].url;
             }
 
-            // Cấu hình bài hát cho thư viện khoảnh khắc
             if (momentsMusic && MOMENTS_MUSIC_URL) {
                 momentsMusic.src = MOMENTS_MUSIC_URL;
-                momentsMusic.volume = 0.45; // Âm lượng nhạc nền khoảnh khắc (0.0 đến 1.0)
+                momentsMusic.volume = 0.45;
             }
-
-            renderMomentsGrid();
-        }
-
-        function renderMomentsGrid() {
-            momentsGrid.innerHTML = '';
-            
-            MOMENTS_CONFIG.forEach((moment, idx) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'moment-item';
-                itemDiv.onclick = (e) => {
-                    e.stopPropagation();
-                    openStory(idx);
-                };
-
-                if (moment.type === 'image') {
-                    const img = document.createElement('img');
-                    img.src = moment.url;
-                    img.loading = 'lazy';
-                    img.alt = `Moment ${idx + 1}`;
-                    itemDiv.appendChild(img);
-                } else if (moment.type === 'video') {
-                    const video = document.createElement('video');
-                    video.src = moment.url;
-                    video.muted = true;
-                    video.playsInline = true;
-                    video.loop = true;
-                    video.preload = 'none'; // Không tải trước để tránh làm đơ trình duyệt khi có nhiều video
-                    
-                    const badge = document.createElement('div');
-                    badge.className = 'moment-video-badge';
-                    badge.innerHTML = '<i class="fa-solid fa-play"></i>';
-                    
-                    itemDiv.appendChild(video);
-                    itemDiv.appendChild(badge);
-
-                    // Auto-play preview on hover
-                    itemDiv.onmouseenter = () => {
-                        video.preload = 'auto'; // Chỉ tải khi di chuột vào
-                        video.play().catch(err => console.log('Video preview failed:', err));
-                    };
-                    itemDiv.onmouseleave = () => {
-                        video.pause();
-                        video.currentTime = 0;
-                    };
-                }
-
-                momentsGrid.appendChild(itemDiv);
-            });
         }
 
         function openMoments(event) {
             if (event) event.stopPropagation();
             momentsOverlay.style.display = 'flex';
             
-            // Tạm dừng nhạc nền chính của trang web để không đè âm thanh
+            renderMomentsSwiper();
+            
+            // Khởi động vòng lặp chạy chữ karaoke
+            if (lyricsAnimationId) cancelAnimationFrame(lyricsAnimationId);
+            updateLyricsAndSweep();
+
             const bgMusic = document.getElementById('bg-music');
             if (bgMusic && !bgMusic.paused) {
                 togglePlay(event);
             }
 
-            // Phát nhạc nền của Khoảnh khắc
             if (momentsMusic && MOMENTS_MUSIC_URL) {
                 momentsMusic.play().catch(err => console.log('Moments music playback blocked:', err));
             }
@@ -1953,11 +2559,30 @@
 
         function closeMoments() {
             momentsOverlay.style.display = 'none';
-            // Tắt nhạc nền Khoảnh khắc khi đóng
+            
+            // Dừng vòng lặp chạy chữ karaoke
+            if (lyricsAnimationId) {
+                cancelAnimationFrame(lyricsAnimationId);
+                lyricsAnimationId = null;
+            }
+            
             if (momentsMusic) {
                 momentsMusic.pause();
                 momentsMusic.currentTime = 0;
             }
+            
+            const allVideos = document.querySelectorAll('.polaroid-card video');
+            allVideos.forEach(v => v.pause());
+            
+            // Ẩn và reset chữ lyrics trên swiper
+            const swiperLyricsText = document.getElementById('swiperLyricsText');
+            const swiperLyricsContainer = document.getElementById('swiperLyricsContainer');
+            if (swiperLyricsContainer && swiperLyricsText) {
+                swiperLyricsContainer.style.opacity = '0';
+                swiperLyricsText.textContent = '';
+                swiperLyricsText.style.setProperty('--progress', '0%');
+            }
+            lastTexts = {};
         }
 
         let currentStoryIdx = 0;

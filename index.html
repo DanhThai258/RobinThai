@@ -1072,6 +1072,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.12s ease-in-out;
         }
 
         #lightboxMediaContainer img, #lightboxMediaContainer video {
@@ -1083,7 +1084,6 @@
             border-radius: 16px;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: zoomIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.15);
         }
 
         @media (max-width: 480px) {
@@ -1111,6 +1111,11 @@
                 width: 36px;
                 height: 36px;
                 font-size: 14px;
+            }
+            .lightbox-overlay {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                background: rgba(2, 6, 23, 0.99) !important;
             }
             #lightboxMediaContainer img, #lightboxMediaContainer video {
                 max-height: 60vh;
@@ -2594,63 +2599,108 @@
         let storyTimer = null;
         const STORY_DURATION = 5000; // 5 giây cho mỗi ảnh
 
+        // Initialize Lightbox DOM items once on load to prevent rendering lag
+        function initLightbox() {
+            lightboxMediaContainer.innerHTML = '';
+            MOMENTS_CONFIG.forEach((moment) => {
+                if (moment.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = moment.url;
+                    img.alt = 'Story Image';
+                    img.className = 'lightbox-item';
+                    img.style.display = 'none';
+                    
+                    // Decode image off-main-thread when browser is idle to avoid frame drops on click
+                    if ('decode' in img) {
+                        setTimeout(() => {
+                            img.decode().catch(() => {});
+                        }, 800);
+                    }
+                    
+                    lightboxMediaContainer.appendChild(img);
+                } else if (moment.type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = moment.url;
+                    video.preload = 'auto';
+                    video.playsInline = true;
+                    video.muted = false;
+                    video.volume = 0.15;
+                    video.className = 'lightbox-item';
+                    video.style.display = 'none';
+                    lightboxMediaContainer.appendChild(video);
+                }
+            });
+        }
+
         function openStory(idx) {
             currentStoryIdx = idx;
             lightboxOverlay.style.display = 'flex';
-            showStoryItem();
+            showStoryItem(true);
             
             // Khởi động vòng lặp chạy chữ karaoke
             if (lyricsAnimationId) cancelAnimationFrame(lyricsAnimationId);
             updateLyricsAndSweep();
         }
 
-        function showStoryItem() {
+        function showStoryItem(isFirstOpen = false) {
             clearTimeout(storyTimer);
-            const moment = MOMENTS_CONFIG[currentStoryIdx];
-            lightboxMediaContainer.innerHTML = '';
             
-            updateStoryProgressBar();
-
-            if (moment.type === 'image') {
-                const img = document.createElement('img');
-                img.src = moment.url;
-                img.alt = 'Story Image';
-                lightboxMediaContainer.appendChild(img);
+            const transitionDuration = isFirstOpen ? 0 : 120;
+            
+            if (!isFirstOpen) {
+                lightboxMediaContainer.style.opacity = '0';
+            }
+            
+            setTimeout(() => {
+                const items = lightboxMediaContainer.querySelectorAll('.lightbox-item');
+                items.forEach((item) => {
+                    if (item.tagName === 'VIDEO') {
+                        item.pause();
+                        item.onended = null;
+                        item.ontimeupdate = null;
+                    }
+                    item.style.display = 'none';
+                });
                 
-                // Tiếp tục phát nhạc nền khoảnh khắc khi xem ảnh
-                if (momentsMusic && MOMENTS_MUSIC_URL && momentsMusic.paused) {
-                    momentsMusic.play().catch(err => console.log(err));
+                const activeItem = items[currentStoryIdx];
+                if (!activeItem) return;
+                
+                updateStoryProgressBar(activeItem);
+                
+                activeItem.style.display = 'block';
+                
+                const moment = MOMENTS_CONFIG[currentStoryIdx];
+                if (moment.type === 'image') {
+                    // Tiếp tục phát nhạc nền khoảnh khắc khi xem ảnh
+                    if (momentsMusic && MOMENTS_MUSIC_URL && momentsMusic.paused) {
+                        momentsMusic.play().catch(err => console.log(err));
+                    }
+                    
+                    // Tự động chuyển sang story tiếp theo sau 5 giây
+                    storyTimer = setTimeout(() => {
+                        nextStory();
+                    }, STORY_DURATION);
+                } else if (moment.type === 'video') {
+                    activeItem.currentTime = 0;
+                    activeItem.play().catch(err => console.log(err));
+                    
+                    // Khi phát xong video thì tự chuyển tiếp sang story tiếp theo
+                    activeItem.onended = () => {
+                        nextStory();
+                    };
                 }
                 
-                // Tự động chuyển sang story tiếp theo sau 5 giây
-                storyTimer = setTimeout(() => {
-                    nextStory();
-                }, STORY_DURATION);
-            } else if (moment.type === 'video') {
-                // Giữ nhạc nền Khoảnh khắc chạy xuyên suốt không bị tắt
-
-                const video = document.createElement('video');
-                video.src = moment.url;
-                video.autoplay = true;
-                video.playsInline = true;
-                video.muted = false; 
-                video.volume = 0.15; // Âm lượng video nhỏ (15%) để không lấn át nhạc nền
-                video.style.maxWidth = '100%';
-                video.style.maxHeight = '100%';
-                lightboxMediaContainer.appendChild(video);
-                
-                // Khi phát xong video thì tự chuyển tiếp sang story tiếp theo
-                video.onended = () => {
-                    nextStory();
-                };
-            }
+                requestAnimationFrame(() => {
+                    lightboxMediaContainer.style.opacity = '1';
+                });
+            }, transitionDuration);
         }
 
         function nextStory(event) {
             if (event) event.stopPropagation();
             if (currentStoryIdx < MOMENTS_CONFIG.length - 1) {
                 currentStoryIdx++;
-                showStoryItem();
+                showStoryItem(false);
             } else {
                 closeLightbox();
             }
@@ -2660,13 +2710,13 @@
             if (event) event.stopPropagation();
             if (currentStoryIdx > 0) {
                 currentStoryIdx--;
-                showStoryItem();
+                showStoryItem(false);
             } else {
-                showStoryItem(); // Quay lại đầu story hiện tại nếu là ảnh đầu tiên
+                showStoryItem(false); // Quay lại đầu story hiện tại nếu là ảnh đầu tiên
             }
         }
 
-        function updateStoryProgressBar() {
+        function updateStoryProgressBar(activeItem) {
             const progressBar = document.getElementById('storyProgressBar');
             progressBar.innerHTML = '';
             
@@ -2692,11 +2742,10 @@
                     } else {
                         // Cập nhật thanh tiến độ theo thời gian thực của video
                         setTimeout(() => {
-                            const video = lightboxMediaContainer.querySelector('video');
-                            if (video) {
-                                video.ontimeupdate = () => {
-                                    if (video.duration) {
-                                        const pct = (video.currentTime / video.duration) * 100;
+                            if (activeItem && activeItem.tagName === 'VIDEO') {
+                                activeItem.ontimeupdate = () => {
+                                    if (activeItem.duration) {
+                                        const pct = (activeItem.currentTime / activeItem.duration) * 100;
                                         fill.style.transition = 'none';
                                         fill.style.width = `${pct}%`;
                                     }
@@ -2724,7 +2773,17 @@
             }
             
             lightboxOverlay.style.display = 'none';
-            lightboxMediaContainer.innerHTML = '';
+            
+            // Dừng và ẩn tất cả các item trong Lightbox thay vì xóa HTML
+            const items = lightboxMediaContainer.querySelectorAll('.lightbox-item');
+            items.forEach((item) => {
+                if (item.tagName === 'VIDEO') {
+                    item.pause();
+                    item.onended = null;
+                    item.ontimeupdate = null;
+                }
+                item.style.display = 'none';
+            });
 
             // Ẩn lời bài hát và xóa nội dung chữ khi đóng Story
             const lyricsContainer = document.getElementById('storyLyricsContainer');
@@ -2752,6 +2811,7 @@
         // Initialize moments gallery on DOM content loaded
         document.addEventListener('DOMContentLoaded', () => {
             initMomentsGallery();
+            initLightbox();
         });
     </script>
 </body>

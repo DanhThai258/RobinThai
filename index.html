@@ -56,55 +56,376 @@
             pointer-events: none;
         }
 
-        /* ─── NAVBAR ─── */
+        /* ─── NAVBAR: FLOATING DYNAMIC ISLAND ─── */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            padding: 16px 32px;
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(12,10,6,0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s;
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 44px);
+            max-width: 1040px;
+            z-index: 1000;
+            padding: 9px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(14, 11, 7, 0.72);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 215, 100, 0.15);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        top 0.3s ease,
+                        padding 0.3s ease,
+                        background 0.3s ease,
+                        box-shadow 0.3s ease,
+                        border-color 0.3s ease;
         }
+        nav.nav-scrolled {
+            padding: 7px 18px;
+            background: rgba(10, 8, 5, 0.88);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+        nav.nav-hidden {
+            transform: translate(-50%, -130%);
+        }
+
+        /* Logo & Status Indicator */
         .nav-logo {
-            font-weight: 800; font-size: 18px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            padding: 4px 6px;
         }
+        .nav-logo-text {
+            font-weight: 800;
+            font-size: 16.5px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #fff 0%, var(--primary) 40%, var(--accent) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: background-position 0.4s ease;
+        }
+        .nav-logo:hover .nav-logo-text {
+            background-position: right center;
+        }
+        .status-indicator {
+            position: relative;
+            display: inline-flex;
+            width: 8px;
+            height: 8px;
+        }
+        .status-ping {
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: #10b981;
+            opacity: 0.75;
+            animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        .status-dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        @keyframes pingPulse {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            70%, 100% { transform: scale(2.3); opacity: 0; }
+        }
+
+        /* Nav links & Magnetic Lamp */
         .nav-links {
-            display: flex; gap: 8px; list-style: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            list-style: none;
+            padding: 3px;
+            border-radius: 40px;
+        }
+        .nav-lamp {
+            position: absolute;
+            top: 2px;
+            left: 0;
+            height: calc(100% - 4px);
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(251, 146, 60, 0.16));
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            box-shadow: 0 2px 14px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(0);
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.25s ease;
+            z-index: 1;
+        }
+        .nav-links li {
+            position: relative;
+            z-index: 2;
         }
         .nav-links a {
-            color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 500;
-            padding: 6px 14px; border-radius: 20px;
-            transition: all 0.2s;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 13px;
+            border-radius: 20px;
+            transition: color 0.2s ease, transform 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            white-space: nowrap;
         }
         .nav-links a:hover {
-            color: var(--text); background: var(--card);
+            color: #ffffff;
         }
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.55);
+        }
+        .nav-links a.nav-cta {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(251, 146, 60, 0.16));
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fff;
+            font-weight: 600;
+            margin-left: 4px;
+            padding: 6px 15px;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.2);
+        }
+        .nav-links a.nav-cta:hover {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-color: transparent;
+            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.45);
+            transform: translateY(-1px);
+        }
+        .nav-links a.nav-cta i {
+            font-size: 11px;
+            transition: transform 0.25s ease;
+        }
+        .nav-links a.nav-cta:hover i {
+            transform: translateX(2px) translateY(-1px);
+        }
+
+        /* Neon Scroll Progress Line */
+        .nav-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.04);
+            overflow: visible;
+            pointer-events: none;
+        }
+        .nav-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f59e0b, #fcd34d, #fb923c);
+            border-radius: 2px;
+            position: relative;
+            transition: width 0.08s ease-out;
+        }
+        .nav-progress-glow {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px #f59e0b, 0 0 14px #f59e0b;
+        }
+
         .hamburger {
-            display: none; cursor: pointer; color: var(--primary); font-size: 22px;
-            width: 40px; height: 40px; align-items: center; justify-content: center;
+            display: none; cursor: pointer; color: var(--primary); font-size: 18px;
+            width: 38px; height: 38px; align-items: center; justify-content: center;
+            border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .hamburger:hover {
+            background: var(--card); border-color: var(--accent); color: #fff;
+        }
+        .hamburger i {
+            transition: transform 0.25s ease;
+        }
+        .hamburger.open {
+            background: rgba(245, 158, 11, 0.22);
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+        .hamburger.open i {
+            transform: rotate(90deg);
+        }
+
+        /* ─── MOBILE MENU: FLOATING GLASS DROPDOWN ─── */
+        .mobile-menu-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 998;
+            background: rgba(10, 8, 5, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .mobile-menu-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .mobile-menu {
-            display: none; position: fixed; inset: 0; z-index: 999;
-            background: rgba(12,10,6,0.98); backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            flex-direction: column; align-items: center; justify-content: center;
-            gap: 18px; padding: 60px 20px; overflow-y: auto;
+            position: fixed;
+            top: 68px;
+            left: 14px;
+            right: 14px;
+            max-width: 420px;
+            margin: 0 auto;
+            z-index: 1001;
+            background: rgba(16, 12, 7, 0.92);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.15);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(-12px) scale(0.96);
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .mobile-menu.open { display: flex; }
-        .mobile-menu a {
-            color: var(--text); text-decoration: none; font-size: 18px; font-weight: 700;
-            padding: 8px 24px; border-radius: 14px; transition: all 0.2s;
+        .mobile-menu.open {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
-        .mobile-menu a:hover { background: var(--card); color: var(--accent); }
-        .mobile-close {
-            position: absolute; top: 18px; right: 20px; font-size: 26px;
-            cursor: pointer; color: var(--text-sub); width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
+
+        .mobile-menu-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 6px 8px;
+            border-bottom: 1px solid rgba(255, 215, 100, 0.1);
+        }
+        .mobile-menu-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .mobile-menu-status {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mobile-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .mobile-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 100, 0.08);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .mobile-nav-item:active {
+            transform: scale(0.97);
+            background: rgba(245, 158, 11, 0.18);
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+        .mobile-nav-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12.5px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .mobile-nav-item:active .mobile-nav-icon {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+
+        .mobile-nav-item.mobile-nav-cta {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(251, 146, 60, 0.16));
+            border-color: rgba(245, 158, 11, 0.4);
+            justify-content: center;
+            padding: 11px 16px;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.18);
+        }
+        .mobile-nav-item.mobile-nav-cta .mobile-nav-icon {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #ffffff;
+            border: none;
+        }
+
+        .mobile-menu-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 215, 100, 0.08);
+        }
+        .mobile-menu-footer a {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        .mobile-menu-footer a:active {
+            transform: scale(1.1);
+            background: var(--card);
+            color: var(--primary);
+            border-color: var(--accent);
         }
 
         /* ─── CONTAINER ─── */
@@ -326,18 +647,125 @@
         .timeline-org { font-size: 12.5px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
         .timeline-desc { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
 
-        /* Tabs */
-        .tabs { display: flex; gap: 8px; margin-top: 24px; margin-bottom: 24px; }
+        /* ─── TABS & SLIDING INDICATOR ─── */
+        .tabs-wrapper {
+            margin-top: 26px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+        }
+        .tabs {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(14, 11, 7, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        .tab-glider {
+            position: absolute;
+            top: 4px;
+            left: 0;
+            height: calc(100% - 8px);
+            border-radius: 50px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(251, 146, 60, 0.2));
+            border: 1px solid var(--accent);
+            box-shadow: 0 2px 14px rgba(245, 158, 11, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+        }
         .tab-btn {
-            padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600;
-            cursor: pointer; border: 1px solid var(--border); background: transparent;
-            color: var(--text-sub); transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+            padding: 9px 22px;
+            border-radius: 50px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            transition: color 0.25s ease, transform 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .tab-btn i {
+            font-size: 13px;
+            color: var(--accent);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+        .tab-btn:hover {
+            color: var(--text);
+        }
+        .tab-btn:hover i {
+            transform: scale(1.15);
+            color: var(--primary);
         }
         .tab-btn.active {
-            background: rgba(245,158,11,0.18); border-color: var(--accent); color: var(--primary);
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
         }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
+        .tab-btn.active i {
+            color: var(--primary);
+        }
+        .tab-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ─── TAB CONTENT SLIDE & FADE ─── */
+        .tab-panels-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        .tab-panel {
+            display: none;
+            width: 100%;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        .tab-panel.slide-from-right {
+            animation: tabSlideRight 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .tab-panel.slide-from-left {
+            animation: tabSlideLeft 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes tabSlideRight {
+            0% {
+                opacity: 0;
+                transform: translateX(30px) scale(0.99);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        @keyframes tabSlideLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px) scale(0.99);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+                filter: blur(0);
+            }
+        }
 
         /* ─── PROJECTS ─── */
         #projects .projects-grid {
@@ -740,7 +1168,19 @@
         }
 
         @media (max-width: 768px) {
-            nav { padding: 14px 20px; }
+            nav {
+                top: 12px;
+                width: calc(100% - 24px);
+                padding: 8px 16px;
+                border-radius: 40px;
+            }
+            nav.nav-scrolled {
+                padding: 7px 14px;
+            }
+            .nav-progress-bar {
+                left: 16px;
+                right: 16px;
+            }
             .nav-links { display: none; }
             .hamburger { display: flex; }
 
@@ -882,12 +1322,59 @@
             .lightbox-img {
                 max-width: 95vw; max-height: 74vh; border-radius: 12px;
             }
+
+            /* Tabs Responsive trên Tablet & Mobile */
+            .tabs-wrapper {
+                justify-content: center;
+                margin-top: 20px;
+                margin-bottom: 24px;
+            }
+            .tabs {
+                width: 100%;
+                max-width: 400px;
+                display: flex;
+            }
+            .tab-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 10px 14px;
+                font-size: 13px;
+                gap: 6px;
+            }
         }
 
         @media (max-width: 480px) {
             .container { padding: 0 14px; }
             .hero-name { font-size: 24px; letter-spacing: -0.5px; }
             .hero-tagline { font-size: 14px; }
+
+            .mobile-menu {
+                top: 60px;
+                left: 10px;
+                right: 10px;
+                padding: 12px;
+                gap: 10px;
+                border-radius: 20px;
+            }
+            .mobile-nav-item {
+                padding: 8px 10px;
+                font-size: 13px;
+                gap: 8px;
+            }
+            .mobile-nav-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 11.5px;
+            }
+
+            .tabs {
+                max-width: 100%;
+            }
+            .tab-btn {
+                padding: 9px 8px;
+                font-size: 12.5px;
+                gap: 5px;
+            }
         }
     </style>
 </head>
@@ -904,33 +1391,88 @@
         <img src="avatar.jpg" alt="Robin Thai">
     </div>
 
-    <!-- Navbar -->
-    <nav>
-        <div class="nav-logo">Robin Thai</div>
-        <ul class="nav-links">
-            <li><a href="#hero">Home</a></li>
+    <!-- Navbar: Floating Dynamic Island -->
+    <nav id="mainNav">
+        <a href="#hero" class="nav-logo" aria-label="Robin Thai Home">
+            <span class="status-indicator" title="Available • The Winter Prince">
+                <span class="status-ping"></span>
+                <span class="status-dot"></span>
+            </span>
+            <span class="nav-logo-text">Robin Thai</span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+            <div class="nav-lamp" id="navLamp"></div>
+            <li><a href="#hero" class="active">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#skills">Skills</a></li>
             <li><a href="#experience">Experience</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#hobbies">Hobbies</a></li>
             <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact" class="nav-cta"><i class="fas fa-paper-plane"></i> Contact</a></li>
         </ul>
-        <div class="hamburger" onclick="toggleMenu()" aria-label="Open Menu"><i class="fas fa-bars"></i></div>
+
+        <div class="hamburger" id="navHamburger" onclick="toggleMenu()" aria-label="Open Menu"><i class="fas fa-bars"></i></div>
+
+        <!-- Neon Scroll Progress Line -->
+        <div class="nav-progress-bar">
+            <div class="nav-progress-fill" id="navProgressFill">
+                <span class="nav-progress-glow"></span>
+            </div>
+        </div>
     </nav>
 
-    <!-- Mobile menu -->
+    <!-- Mobile menu backdrop -->
+    <div class="mobile-menu-backdrop" id="mobileBackdrop" onclick="closeMenu()"></div>
+
+    <!-- Mobile menu: Floating Glass Dropdown -->
     <div class="mobile-menu" id="mobileMenu">
-        <span class="mobile-close" onclick="toggleMenu()"><i class="fas fa-times"></i></span>
-        <a href="#hero" onclick="toggleMenu()">Home</a>
-        <a href="#about" onclick="toggleMenu()">About</a>
-        <a href="#skills" onclick="toggleMenu()">Skills</a>
-        <a href="#experience" onclick="toggleMenu()">Experience</a>
-        <a href="#projects" onclick="toggleMenu()">Projects</a>
-        <a href="#hobbies" onclick="toggleMenu()">Hobbies</a>
-        <a href="#gallery" onclick="toggleMenu()">Gallery</a>
-        <a href="#contact" onclick="toggleMenu()">Contact</a>
+        <div class="mobile-menu-top">
+            <span class="mobile-menu-label">Navigation</span>
+            <span class="mobile-menu-status">Robin Thai ❄️</span>
+        </div>
+
+        <div class="mobile-nav-grid">
+            <a href="#hero" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-home"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="#about" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-user"></i></div>
+                <span>About</span>
+            </a>
+            <a href="#skills" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-bolt"></i></div>
+                <span>Skills</span>
+            </a>
+            <a href="#experience" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-graduation-cap"></i></div>
+                <span>Journey</span>
+            </a>
+            <a href="#projects" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-code"></i></div>
+                <span>Projects</span>
+            </a>
+            <a href="#hobbies" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-heart"></i></div>
+                <span>Hobbies</span>
+            </a>
+            <a href="#gallery" onclick="closeMenu()" class="mobile-nav-item">
+                <div class="mobile-nav-icon"><i class="fas fa-camera"></i></div>
+                <span>Gallery</span>
+            </a>
+            <a href="#contact" onclick="closeMenu()" class="mobile-nav-item mobile-nav-cta">
+                <div class="mobile-nav-icon"><i class="fas fa-paper-plane"></i></div>
+                <span>Get In Touch · Contact</span>
+            </a>
+        </div>
+
+        <div class="mobile-menu-footer">
+            <a href="https://facebook.com/RobinnThai" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://github.com/RobinnThai" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#contact" onclick="closeMenu()" aria-label="Contact"><i class="fas fa-envelope"></i></a>
+        </div>
     </div>
 
     <!-- ─── HERO ─── -->
@@ -1190,17 +1732,21 @@
                 My education, learning experience and development journey.
             </p>
 
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('edu')">
-                    🎓 Education
-                </button>
-                <button class="tab-btn" onclick="switchTab('exp')">
-                    💼 Experience
-                </button>
+            <div class="tabs-wrapper">
+                <div class="tabs" id="journeyTabs">
+                    <div class="tab-glider" id="tabGlider"></div>
+                    <button class="tab-btn active" data-tab="edu" onclick="switchTab('edu', this)">
+                        <i class="fas fa-graduation-cap"></i> <span>Education</span>
+                    </button>
+                    <button class="tab-btn" data-tab="exp" onclick="switchTab('exp', this)">
+                        <i class="fas fa-briefcase"></i> <span>Experience</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- EDUCATION -->
-            <div class="tab-panel active" id="tab-edu">
+            <div class="tab-panels-wrapper">
+                <!-- EDUCATION -->
+                <div class="tab-panel active" id="tab-edu">
                 <div class="timeline">
                     <div class="timeline-item">
                         <div class="timeline-left">
@@ -1292,6 +1838,7 @@
                     </div>
                 </div>
             </div>
+            </div><!-- /tab-panels-wrapper -->
         </div>
     </section>
 
@@ -1595,7 +2142,7 @@
                     </div>
                     <div>
                         <div class="social-name">Facebook</div>
-                        <div class="social-handle">@RobinnThai</div>
+                        <div class="social-handle">Nguyễn Danh Thái</div>
                     </div>
                     <div class="social-arrow"><i class="fas fa-arrow-right"></i></div>
                 </a>
@@ -1649,7 +2196,7 @@
                     <p style="margin:12px 0 20px">Whether it's a question, collaboration or just a conversation — I'll reply as soon as I can.</p>
 
                     <div class="contact-method">
-                        <div class="contact-method-icon"><i class="fab fa-facebook-messenger"></i></div>
+                        <div class="contact-method-icon"><i class="fab fa-facebook-f"></i></div>
                         <div>
                             <div class="contact-method-label">Facebook</div>
                             <div class="contact-method-val">Nguyễn Danh Thái</div>
@@ -1797,6 +2344,7 @@
                 closeLightbox();
                 closeAlbumModal();
                 closeAvatar();
+                closeMenu();
             } else if (e.key === 'ArrowRight') {
                 if (document.getElementById('lightboxModal').classList.contains('open')) {
                     nextLightboxImg();
@@ -1815,14 +2363,99 @@
 
         // ─── Mobile menu ───
         const mobileMenu = document.getElementById('mobileMenu');
-        function toggleMenu() { mobileMenu.classList.toggle('open'); }
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const navHamburger = document.getElementById('navHamburger');
 
-        // ─── Tabs ───
-        function switchTab(tab) {
+        function toggleMenu() {
+            if (!mobileMenu) return;
+            const isOpen = mobileMenu.classList.toggle('open');
+            if (mobileBackdrop) mobileBackdrop.classList.toggle('open', isOpen);
+            if (navHamburger) {
+                navHamburger.classList.toggle('open', isOpen);
+                const icon = navHamburger.querySelector('i');
+                if (icon) icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+            }
+        }
+
+        function closeMenu() {
+            if (mobileMenu) mobileMenu.classList.remove('open');
+            if (mobileBackdrop) mobileBackdrop.classList.remove('open');
+            if (navHamburger) {
+                navHamburger.classList.remove('open');
+                const icon = navHamburger.querySelector('i');
+                if (icon) icon.className = 'fas fa-bars';
+            }
+        }
+
+        // ─── Tabs với hiệu ứng trượt mượt (Glider + Slide & Fade) ───
+        const tabOrder = ['edu', 'exp'];
+        let currentActiveTab = 'edu';
+
+        function updateTabGlider(activeBtn) {
+            const glider = document.getElementById('tabGlider');
+            if (!glider || !activeBtn) return;
+            glider.style.width = activeBtn.offsetWidth + 'px';
+            glider.style.height = activeBtn.offsetHeight + 'px';
+            glider.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+            glider.style.opacity = '1';
+        }
+
+        function switchTab(tab, clickedBtn) {
+            if (tab === currentActiveTab) return;
+
+            const oldIndex = tabOrder.indexOf(currentActiveTab);
+            const newIndex = tabOrder.indexOf(tab);
+            const slideClass = (newIndex >= oldIndex) ? 'slide-from-right' : 'slide-from-left';
+            currentActiveTab = tab;
+
+            // Cập nhật active button & vị trí glider
+            const targetBtn = clickedBtn || document.querySelector(`.tab-btn[data-tab="${tab}"]`);
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            event.target.classList.add('active');
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+                updateTabGlider(targetBtn);
+            }
+
+            // Chuyển panel với animation trượt mượt
+            const panels = document.querySelectorAll('.tab-panel');
+            const targetPanel = document.getElementById('tab-' + tab);
+
+            panels.forEach(p => {
+                p.classList.remove('active', 'slide-from-right', 'slide-from-left');
+                p.style.display = 'none';
+            });
+
+            if (targetPanel) {
+                targetPanel.style.display = 'block';
+                // Trigger reflow để kích hoạt lại CSS keyframe
+                void targetPanel.offsetWidth;
+                targetPanel.classList.add('active', slideClass);
+
+                // Hiệu ứng xuất hiện so le (stagger) cho các thẻ timeline con
+                const cards = targetPanel.querySelectorAll('.timeline-content');
+                cards.forEach((card, idx) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(16px)';
+                    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, idx * 80 + 60);
+                });
+            }
+        }
+
+        // Cập nhật Glider khi tải trang & khi co giãn màn hình (Responsive)
+        function initTabGlider() {
+            const activeBtn = document.querySelector('.tab-btn.active');
+            if (activeBtn) updateTabGlider(activeBtn);
+        }
+        window.addEventListener('resize', initTabGlider, { passive: true });
+        window.addEventListener('orientationchange', () => setTimeout(initTabGlider, 150));
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTabGlider);
+        } else {
+            setTimeout(initTabGlider, 80);
         }
 
         // ─── Skill bars animate on scroll ───
@@ -1844,18 +2477,119 @@
             document.getElementById('form-success').style.display = 'block';
         }
 
-        // ─── Scroll-based nav highlight ───
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-links a');
+        // ─── NAVBAR: DYNAMIC ISLAND, MAGNETIC LAMP & SCROLL PROGRESS ───
+        const mainNav = document.getElementById('mainNav');
+        const navLamp = document.getElementById('navLamp');
+        const navLinksContainer = document.getElementById('navLinks');
+        const navLinksList = document.querySelectorAll('.nav-links a');
+        const navProgressFill = document.getElementById('navProgressFill');
+        const allSections = document.querySelectorAll('section[id]');
+
+        let currentActiveAnchor = document.querySelector('.nav-links a.active') || navLinksList[0];
+        let lastScrollY = window.scrollY;
+        let isScrollTicking = false;
+
+        function updateNavLamp(targetAnchor) {
+            if (!navLamp || !targetAnchor || !navLinksContainer) return;
+            const containerRect = navLinksContainer.getBoundingClientRect();
+            const targetRect = targetAnchor.getBoundingClientRect();
+            const offsetLeft = targetRect.left - containerRect.left;
+
+            navLamp.style.width = targetRect.width + 'px';
+            navLamp.style.transform = `translateX(${offsetLeft}px)`;
+            navLamp.style.opacity = '1';
+        }
+
+        // Hover magnetic lamp
+        navLinksList.forEach(link => {
+            link.addEventListener('mouseenter', () => updateNavLamp(link));
+        });
+
+        if (navLinksContainer) {
+            navLinksContainer.addEventListener('mouseleave', () => {
+                if (currentActiveAnchor) {
+                    updateNavLamp(currentActiveAnchor);
+                } else if (navLamp) {
+                    navLamp.style.opacity = '0';
+                }
+            });
+        }
+
+        function handleNavScroll() {
+            const currentScrollY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+            // 1. Neon Scroll Progress Bar
+            if (navProgressFill && docHeight > 0) {
+                const progressPct = Math.min(100, Math.max(0, (currentScrollY / docHeight) * 100));
+                navProgressFill.style.width = progressPct + '%';
+            }
+
+            // 2. Scrolled state & Smart Hide / Reveal
+            if (mainNav) {
+                if (currentScrollY > 40) {
+                    mainNav.classList.add('nav-scrolled');
+                } else {
+                    mainNav.classList.remove('nav-scrolled');
+                }
+
+                const mobileMenuEl = document.getElementById('mobileMenu');
+                const isMobileOpen = mobileMenuEl && mobileMenuEl.classList.contains('open');
+
+                if (!isMobileOpen) {
+                    if (currentScrollY > 160 && currentScrollY > lastScrollY + 6) {
+                        // Scrolling down -> hide navbar
+                        mainNav.classList.add('nav-hidden');
+                    } else if (currentScrollY < lastScrollY - 6 || currentScrollY < 80) {
+                        // Scrolling up or near top -> reveal navbar
+                        mainNav.classList.remove('nav-hidden');
+                    }
+                }
+            }
+
+            // 3. Highlight current section & position lamp
+            let activeId = '';
+            allSections.forEach(s => {
+                if (currentScrollY >= s.offsetTop - 140) activeId = s.id;
+            });
+
+            navLinksList.forEach(a => {
+                const href = a.getAttribute('href');
+                if (href === '#' + activeId) {
+                    a.classList.add('active');
+                    currentActiveAnchor = a;
+                    if (navLinksContainer && !navLinksContainer.matches(':hover') && window.innerWidth > 768) {
+                        updateNavLamp(a);
+                    }
+                } else {
+                    a.classList.remove('active');
+                }
+            });
+
+            lastScrollY = currentScrollY;
+            isScrollTicking = false;
+        }
+
         window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(s => {
-                if (window.scrollY >= s.offsetTop - 120) current = s.id;
-            });
-            navLinks.forEach(a => {
-                a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
-            });
+            if (!isScrollTicking) {
+                window.requestAnimationFrame(handleNavScroll);
+                isScrollTicking = true;
+            }
         }, { passive: true });
+
+        // Initialize lamp on load & resize
+        window.addEventListener('resize', () => {
+            if (currentActiveAnchor && window.innerWidth > 768) {
+                updateNavLamp(currentActiveAnchor);
+            }
+        }, { passive: true });
+
+        setTimeout(() => {
+            handleNavScroll();
+            if (currentActiveAnchor && window.innerWidth > 768) {
+                updateNavLamp(currentActiveAnchor);
+            }
+        }, 150);
 
         // ─── Fade-in on scroll (Only main page sections, not gallery images) ───
         const fadeObserver = new IntersectionObserver((entries) => {
